@@ -32,7 +32,9 @@ function emptyState() {
 
 async function getState(token) {
   const raw = await store().get(`state:${token}`, { type: 'json' });
-  return raw || emptyState();
+  // merge, not replace: old saved states predate the quizzes field and would
+  // otherwise come back without it, crashing anything that reads state.quizzes
+  return Object.assign(emptyState(), raw || {});
 }
 
 async function saveState(token, state) {
