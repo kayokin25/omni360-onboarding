@@ -155,7 +155,6 @@ const meta = {
   sub: text($('.sub')),
   srclinks: $('.srclink').map((_, a) => ({ label: text($(a).find('.m')), text: text(a).replace(text($(a).find('.m')), '').trim(), href: $(a).attr('href') })).get(),
   footer: text($('.footer')),
-  totalCheckItems: $('.ckbox input[type=checkbox]').length,
   totalQuizItems: $('.quiz').length,
   totalOpentasks: $('.opentask').length,
 };

@@ -81,9 +81,8 @@
         return (
           '<button type="button" class="roster-row" data-token="' + escapeHtml(s.token) + '">' +
             '<span class="roster-name">' + escapeHtml(s.name) + '</span>' +
-            '<span class="roster-stat">' + s.checkDone + '/' + D.meta.totalCheckItems + ' отметок</span>' +
             '<span class="roster-stat">' + s.answered + '/' + D.meta.totalOpentasks + ' ответов</span>' +
-            '<span class="roster-stat' + (flag ? ' flag' : '') + '">' + (flag ? s.answersWithoutFeedback + ' без фидбека' : 'фидбек дан') + '</span>' +
+            '<span class="roster-stat' + (flag ? ' flag' : '') + '">' + (flag ? s.answersWithoutFeedback + ' без фидбека' : (s.answered ? 'фидбек дан' : 'пока нет ответов')) + '</span>' +
           '</button>'
         );
       }).join('');
@@ -157,7 +156,6 @@
         '<a class="backlink" href="#" id="backLink">← Ко всем ученикам</a>' +
         '<h2 class="chapter-title">' + escapeHtml(name) + '</h2>' +
         '<p style="color:var(--ink-soft); font-size:14px; margin:0 0 16px;">' +
-          Object.keys(state.checklist).filter(function (k) { return state.checklist[k]; }).length + ' из ' + D.meta.totalCheckItems + ' отметок закрыто · ' +
           answerKeys.length + ' из ' + D.meta.totalOpentasks + ' заданий отправлено' +
         '</p>' +
         (blocks || '<p style="color:var(--ink-faint)">Ученик пока не отправил ни одного ответа.</p>')

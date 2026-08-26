@@ -45,7 +45,7 @@
 
   // ---------- app state ----------
   var me = null; // {name, role}
-  var state = null; // {checklist, answers, feedback}
+  var state = null; // {answers, feedback}
   var navKey = 'onboarding-nav:' + token;
   var current = loadNav();
 
@@ -65,8 +65,8 @@
     return 0;
   }
 
-  function totalCheckDone() {
-    return Object.keys(state.checklist).filter(function (k) { return state.checklist[k]; }).length;
+  function totalAnswered() {
+    return Object.keys(state.answers).length;
   }
 
   // ---------- boot ----------
@@ -100,8 +100,8 @@
           '<div class="whoami">Вы вошли как <b>' + escapeHtml(me.name) + '</b></div>' +
         '</div>' +
         '<div class="progress">' +
-          '<div class="progress-top"><h2>Прогресс</h2><span class="progress-num"><b>' + totalCheckDone() + '</b> из ' + D.meta.totalCheckItems + ' отметок</span></div>' +
-          '<div class="progress-bar"><i style="width:' + Math.round(100 * totalCheckDone() / D.meta.totalCheckItems) + '%"></i></div>' +
+          '<div class="progress-top"><h2>Прогресс</h2><span class="progress-num"><b>' + totalAnswered() + '</b> из ' + D.meta.totalOpentasks + ' заданий отправлено</span></div>' +
+          '<div class="progress-bar"><i style="width:' + Math.round(100 * totalAnswered() / D.meta.totalOpentasks) + '%"></i></div>' +
         '</div>' +
         '<nav class="rail" id="chapterRail"></nav>' +
         '<div id="chapterBody"></div>' +
@@ -203,33 +203,15 @@
 
   // ---------- interactivity inside injected HTML ----------
   function wireInteractions(root) {
-    wireChecklist(root);
     wireQuiz(root);
     wireOpentask(root);
-  }
-
-  function wireChecklist(root) {
-    var boxes = root.querySelectorAll('.ckbox input[type=checkbox]');
-    boxes.forEach(function (b) {
-      var key = b.dataset.k;
-      b.checked = !!state.checklist[key];
-      b.addEventListener('change', function () {
-        state.checklist[key] = b.checked;
-        updateProgressChrome();
-        api('save-checklist', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ t: token, key: key, value: b.checked }),
-        }).catch(function () { /* best-effort; local state already updated */ });
-      });
-    });
   }
 
   function updateProgressChrome() {
     var num = document.querySelector('.progress-num');
     var bar = document.querySelector('.progress-bar > i');
-    if (num) num.innerHTML = '<b>' + totalCheckDone() + '</b> из ' + D.meta.totalCheckItems + ' отметок';
-    if (bar) bar.style.width = Math.round(100 * totalCheckDone() / D.meta.totalCheckItems) + '%';
+    if (num) num.innerHTML = '<b>' + totalAnswered() + '</b> из ' + D.meta.totalOpentasks + ' заданий отправлено';
+    if (bar) bar.style.width = Math.round(100 * totalAnswered() / D.meta.totalOpentasks) + '%';
   }
 
   function wireQuiz(root) {
@@ -275,6 +257,7 @@
               msg.hidden = false;
               msg.textContent = 'Отправлено только что';
               btn.disabled = false;
+              updateProgressChrome();
             })
             .catch(function () {
               msg.hidden = false;

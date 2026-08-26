@@ -5,9 +5,9 @@
   var mode = new URLSearchParams(location.search).get('mock');
   if (!mode) return;
 
-  var studentState = { checklist: {}, answers: {}, feedback: {} };
+  var studentState = { answers: {}, feedback: {} };
   var students = [
-    { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), checkDone: 3, answered: 1, answersWithoutFeedback: 1 },
+    { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), answered: 1, answersWithoutFeedback: 1 },
   ];
   var demoAnswers = {
     ot_m1: { text: 'DOOH дополняет интернет-рекламу охватом в общественных местах, ОРД не нужен, потому что DOOH не подпадает под закон о маркировке интернет-рекламы.', submittedAt: new Date().toISOString() },
@@ -25,13 +25,8 @@
       return ok(mode === 'manager' ? { name: 'Руководитель (демо)', role: 'manager' } : { name: 'Ученик (демо)', role: 'student' });
     }
     if (u.indexOf('/api/get-state') === 0) {
-      if (u.indexOf('student=') > -1) return ok({ checklist: {}, answers: demoAnswers, feedback: demoFeedback });
+      if (u.indexOf('student=') > -1) return ok({ answers: demoAnswers, feedback: demoFeedback });
       return ok(studentState);
-    }
-    if (u.indexOf('/api/save-checklist') === 0) {
-      var body = JSON.parse(opts.body);
-      studentState.checklist[body.key] = body.value;
-      return ok({ ok: true });
     }
     if (u.indexOf('/api/submit-answer') === 0) {
       var b2 = JSON.parse(opts.body);
@@ -42,7 +37,7 @@
     if (u.indexOf('/api/create-student') === 0) {
       var b3 = JSON.parse(opts.body);
       var t = 'demo-' + Math.random().toString(36).slice(2, 8);
-      students.push({ token: t, name: b3.name, createdAt: new Date().toISOString(), checkDone: 0, answered: 0, answersWithoutFeedback: 0 });
+      students.push({ token: t, name: b3.name, createdAt: new Date().toISOString(), answered: 0, answersWithoutFeedback: 0 });
       return ok({ token: t, name: b3.name, role: 'student' });
     }
     if (u.indexOf('/api/submit-feedback') === 0) {

@@ -13,7 +13,6 @@ exports.handler = async (event) => {
   const withProgress = await Promise.all(
     students.map(async (s) => {
       const state = await getState(s.token);
-      const checkDone = Object.values(state.checklist).filter(Boolean).length;
       const answered = Object.keys(state.answers).length;
       const answersWithoutFeedback = Object.keys(state.answers).filter(
         (k) => !(state.feedback[k] && state.feedback[k].length)
@@ -22,7 +21,6 @@ exports.handler = async (event) => {
         token: s.token,
         name: s.name,
         createdAt: s.createdAt,
-        checkDone,
         answered,
         answersWithoutFeedback,
       };
