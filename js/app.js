@@ -6,7 +6,33 @@
   var app = document.getElementById('app');
   var D = window.COURSE_DATA;
 
+  wireLightbox();
+
   if (!token) { showError('Нет ссылки', 'Откройте страницу по персональной ссылке, которую вам прислал руководитель.'); return; }
+
+  // screenshots render at ~780px inside the card but are 1400-1900px wide, so the
+  // UI labels the text refers to are unreadable — click any of them for full size.
+  // delegated on document so it survives every re-render.
+  function wireLightbox() {
+    function close() {
+      var box = document.querySelector('.lightbox');
+      if (box) box.remove();
+      return !!box;
+    }
+    document.addEventListener('click', function (e) {
+      if (close()) return;
+      var img = e.target.tagName === 'IMG' && e.target.classList.contains('shotimg') ? e.target : null;
+      if (!img) return;
+      var box = document.createElement('div');
+      box.className = 'lightbox';
+      var full = new Image();
+      full.src = img.src;
+      full.alt = img.alt;
+      box.appendChild(full);
+      document.body.appendChild(box);
+    });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  }
 
   function api(path, opts) {
     opts = opts || {};
@@ -269,14 +295,17 @@
       }
 
       var correctCount = 0;
-      var wrongKeys = [];
+      var wrong = [];
       questions.forEach(function (q) {
+        var opts = Array.prototype.slice.call(q.querySelectorAll('input[type=radio]'));
         var picked = q.querySelector('input[type=radio]:checked');
         var right = picked.dataset.correct === 'true';
         q.classList.toggle('right', right);
         q.classList.toggle('wrong', !right);
         if (right) correctCount++;
-        else wrongKeys.push(picked.name);
+        // record WHICH option was picked, not just that the question was missed —
+        // the wrong option is what tells the manager what the student believes
+        else wrong.push({ q: picked.name, pick: opts.indexOf(picked) });
       });
 
       var passed = correctCount === questions.length;
@@ -286,7 +315,7 @@
       api('record-quiz-attempt', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ t: token, key: key, wrongKeys: wrongKeys, passed: passed }),
+        body: JSON.stringify({ t: token, key: key, wrong: wrong, passed: passed }),
       }).catch(function () { /* best-effort; local state already updated below */ });
 
       if (passed) {

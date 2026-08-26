@@ -7,7 +7,7 @@
 
   var studentState = { answers: {}, feedback: {}, quizzes: {} };
   var students = [
-    { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), answered: 1, answersWithoutFeedback: 1 },
+    { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), answered: 1, answersWithoutFeedback: 1, quizPassed: 2, quizAttempts: 4, quizMissed: 2 },
   ];
   var demoAnswers = {
     ot_m1: { text: 'DOOH дополняет интернет-рекламу охватом в общественных местах, ОРД не нужен, потому что DOOH не подпадает под закон о маркировке интернет-рекламы.', submittedAt: new Date().toISOString() },
@@ -15,7 +15,13 @@
   var demoFeedback = {};
   var demoQuizzes = {
     'q_m1_6': { passed: true, attempts: 1, everWrong: {} },
-    'q_m1_1+q_m1_2+q_m1_3+q_m1_4+q_m1_5': { passed: true, attempts: 2, everWrong: { q_m1_1: true } },
+    'q_m1_1+q_m1_2+q_m1_3+q_m1_4+q_m1_5': {
+      passed: true, attempts: 3,
+      everWrong: {
+        q_m1_1: { count: 2, picks: [0, 2] },
+        q_m1_2: true, // legacy shape, to check the dashboard still renders it
+      },
+    },
   };
 
   var realFetch = window.fetch.bind(window);
@@ -41,7 +47,13 @@
       var b5 = JSON.parse(opts.body);
       var qz = studentState.quizzes[b5.key] || { passed: false, attempts: 0, everWrong: {} };
       qz.attempts += 1;
-      b5.wrongKeys.forEach(function (k) { qz.everWrong[k] = true; });
+      b5.wrong.forEach(function (w) {
+        var prev = qz.everWrong[w.q];
+        var miss = prev && typeof prev === 'object' ? prev : { count: 0, picks: [] };
+        miss.count += 1;
+        if (miss.picks.indexOf(w.pick) === -1) miss.picks.push(w.pick);
+        qz.everWrong[w.q] = miss;
+      });
       if (b5.passed) qz.passed = true;
       studentState.quizzes[b5.key] = qz;
       return ok({ ok: true });

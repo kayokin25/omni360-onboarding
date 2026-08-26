@@ -17,12 +17,17 @@ exports.handler = async (event) => {
       const answersWithoutFeedback = Object.keys(state.answers).filter(
         (k) => !(state.feedback[k] && state.feedback[k].length)
       ).length;
+      // quiz roll-up so the roster shows who is struggling without drilling in
+      const quizzes = Object.values(state.quizzes || {});
       return {
         token: s.token,
         name: s.name,
         createdAt: s.createdAt,
         answered,
         answersWithoutFeedback,
+        quizPassed: quizzes.filter((q) => q.passed).length,
+        quizAttempts: quizzes.reduce((n, q) => n + (q.attempts || 0), 0),
+        quizMissed: quizzes.reduce((n, q) => n + Object.keys(q.everWrong || {}).length, 0),
       };
     })
   );

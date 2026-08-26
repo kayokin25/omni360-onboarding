@@ -92,6 +92,17 @@ ol.steps > li::before{content:counter(s); position:absolute; left:0; top:1px; fo
 code.tag{font-family:var(--font-mono); font-size:.9em; background:var(--surface-2); padding:1px 5px; border-radius:4px; white-space:nowrap;}
 a{color:var(--accent);}
 
+/* ---------- screenshots ---------- */
+/* raw captures are 1400-1900px wide; without max-width they blow out the 860px
+   shell, and even scaled down the UI labels are too small — hence click-to-zoom */
+.shotimg{max-width:100%; height:auto; display:block; margin:14px 0 4px; border-radius:10px; border:1px solid var(--border); background:var(--surface); cursor:zoom-in;}
+.shotcap{font-size:12.5px; color:var(--ink-faint); margin:0 0 14px;}
+.shotcap b{color:var(--ink-soft); font-weight:600;}
+.shotcap .mark{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; background:#E4572E; color:#fff; font-size:10px; font-weight:700; vertical-align:-2px; margin-right:2px;}
+
+.lightbox{position:fixed; inset:0; z-index:100; background:rgba(8,14,22,.88); padding:20px; overflow:auto; cursor:zoom-out; display:flex;}
+.lightbox img{margin:auto; max-width:none; border-radius:8px; box-shadow:0 18px 50px rgba(0,0,0,.5);}
+
 .note{border-radius:9px; padding:12px 15px; font-size:14.2px; margin:14px 0; border-left:3px solid;}
 .note p{margin:0 0 7px; font-size:14.2px;}
 .note p:last-child{margin-bottom:0;}
@@ -185,6 +196,16 @@ button.btn:disabled{opacity:.4; cursor:default;}
 .answer-q{font-weight:600; margin:0 0 8px; font-size:14.6px;}
 .answer-text{background:var(--surface-2); border-radius:8px; padding:11px 13px; font-size:14.2px; white-space:pre-wrap; margin-bottom:10px;}
 .answer-meta{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); margin-bottom:10px;}
+/* quiz misses: question, what the student picked, what was right */
+.miss-list{list-style:none; padding:0; margin:0; display:grid; gap:12px;}
+.miss-list > li{background:var(--surface-2); border-radius:8px; padding:11px 13px;}
+.miss-q{font-size:14px; font-weight:600; margin-bottom:6px;}
+.miss-n{font-family:var(--font-mono); font-size:11px; font-weight:500; color:var(--bad); white-space:nowrap;}
+.miss-line{font-size:13.4px; line-height:1.45;}
+.miss-bad{color:var(--bad);}
+.miss-good{color:var(--good);}
+.miss-none{color:var(--ink-faint); font-style:italic;}
+
 .fb-form{display:flex; gap:8px; margin-top:10px;}
 .fb-form textarea{flex:1; min-height:52px; resize:vertical; font:inherit; font-size:13.6px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink);}
 

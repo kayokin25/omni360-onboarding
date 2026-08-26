@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "build:content": "node scripts/build-content.mjs"
+    "build:content": "node scripts/build-content.mjs",
+    "build:screenshots": "node scripts/build-screenshots.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^8.1.0"

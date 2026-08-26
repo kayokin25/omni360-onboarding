@@ -26,6 +26,13 @@
     try { return new Date(iso).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }); }
     catch (e) { return iso; }
   }
+  function plural(n, one, few, many) {
+    var a = Math.abs(n) % 100, b = a % 10;
+    if (a > 10 && a < 20) return many;
+    if (b > 1 && b < 5) return few;
+    if (b === 1) return one;
+    return many;
+  }
 
   // ---------- index every open question once, so we can show its text next to an answer ----------
   var ANSWER_INDEX = buildAnswerIndex();
@@ -61,7 +68,13 @@
           var tmp = document.createElement('div');
           tmp.innerHTML = q.html;
           var text = (tmp.querySelector('.q-text') || {}).textContent || '';
-          return { key: q.key, text: text.trim() };
+          // option order here must match the order app.js indexes them in, i.e.
+          // document order of the radios inside the question
+          var options = Array.prototype.map.call(tmp.querySelectorAll('input[type=radio]'), function (r) {
+            var label = r.parentNode;
+            return { text: (label.textContent || '').trim(), correct: r.dataset.correct === 'true' };
+          });
+          return { key: q.key, text: text.trim(), options: options };
         });
         idx[s.key] = { chapterLabel: chapterLabel, questions: questions };
       });
@@ -98,11 +111,16 @@
 
   function renderRoster() {
     return api('list-students?t=' + encodeURIComponent(token)).then(function (res) {
+      var totalQuizBlocks = Object.keys(QUIZ_INDEX).length;
       var rows = res.students.map(function (s) {
         var flag = s.answersWithoutFeedback > 0;
+        var quiz = (s.quizPassed || 0) + '/' + totalQuizBlocks + ' квизов' +
+          (s.quizAttempts ? ' · ' + s.quizAttempts + ' ' + plural(s.quizAttempts, 'попытка', 'попытки', 'попыток') : '') +
+          (s.quizMissed ? ' · ' + s.quizMissed + ' ' + plural(s.quizMissed, 'ошибка', 'ошибки', 'ошибок') : '');
         return (
           '<button type="button" class="roster-row" data-token="' + escapeHtml(s.token) + '">' +
             '<span class="roster-name">' + escapeHtml(s.name) + '</span>' +
+            '<span class="roster-stat' + (s.quizMissed ? ' flag' : '') + '">' + quiz + '</span>' +
             '<span class="roster-stat">' + s.answered + '/' + D.meta.totalOpentasks + ' ответов</span>' +
             '<span class="roster-stat' + (flag ? ' flag' : '') + '">' + (flag ? s.answersWithoutFeedback + ' без фидбека' : (s.answered ? 'фидбек дан' : 'пока нет ответов')) + '</span>' +
           '</button>'
@@ -157,17 +175,40 @@
       var quizBlocks = quizKeys.map(function (key) {
         var meta = QUIZ_INDEX[key] || { chapterLabel: key, questions: [] };
         var qz = state.quizzes[key];
-        var missedTexts = Object.keys(qz.everWrong || {}).map(function (qk) {
+
+        var misses = Object.keys(qz.everWrong || {}).map(function (qk) {
           var q = meta.questions.filter(function (x) { return x.key === qk; })[0];
-          return q ? q.text : qk;
+          var raw = qz.everWrong[qk];
+          // `true` = recorded before the dashboard stored which option was picked
+          var detail = raw && typeof raw === 'object' ? raw : null;
+          var picks = (detail && detail.picks) || [];
+          var right = q && q.options.filter(function (o) { return o.correct; })[0];
+
+          var picked = picks.length && q
+            ? '<div class="miss-line miss-bad">Выбирал: ' + picks.map(function (i) {
+                var o = q.options[i];
+                return '«' + escapeHtml(o ? o.text : 'вариант ' + (i + 1)) + '»';
+              }).join(' · ') + '</div>'
+            : '<div class="miss-line miss-none">Какой вариант выбирал — не сохранилось (ответ записан старой версией)</div>';
+
+          return (
+            '<li>' +
+              '<div class="miss-q">' + escapeHtml(q ? q.text : qk) +
+                (detail ? ' <span class="miss-n">' + detail.count + ' ' + plural(detail.count, 'ошибка', 'ошибки', 'ошибок') + '</span>' : '') +
+              '</div>' +
+              picked +
+              (right ? '<div class="miss-line miss-good">Верно: «' + escapeHtml(right.text) + '»</div>' : '') +
+            '</li>'
+          );
         });
+
         return (
           '<div class="answer-block quiz-summary">' +
-            '<div class="answer-meta">' + escapeHtml(meta.chapterLabel) + ' · квиз</div>' +
-            '<div class="answer-q">' + (qz.passed ? 'Пройден' : 'Не пройден') + ' за ' + qz.attempts + (qz.attempts === 1 ? ' попытку' : qz.attempts < 5 ? ' попытки' : ' попыток') + '</div>' +
-            (missedTexts.length
-              ? '<div class="answer-text">Ошибался в вопросах:<br>— ' + missedTexts.map(escapeHtml).join('<br>— ') + '</div>'
-              : '<div class="answer-text" style="color:var(--good)">Прошёл без единой ошибки</div>') +
+            '<div class="answer-meta">' + escapeHtml(meta.chapterLabel) + ' · квиз из ' + meta.questions.length + ' ' + plural(meta.questions.length, 'вопроса', 'вопросов', 'вопросов') + '</div>' +
+            '<div class="answer-q">' + (qz.passed ? 'Пройден' : 'Не пройден') + ' · ' + qz.attempts + ' ' + plural(qz.attempts, 'попытка', 'попытки', 'попыток') + '</div>' +
+            (misses.length
+              ? '<ul class="miss-list">' + misses.join('') + '</ul>'
+              : '<div class="answer-text" style="color:var(--good)">Прошёл с первой попытки, без единой ошибки</div>') +
           '</div>'
         );
       }).join('');

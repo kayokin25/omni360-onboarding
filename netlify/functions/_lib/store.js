@@ -27,7 +27,12 @@ async function findByToken(token) {
 }
 
 function emptyState() {
-  return { answers: {}, feedback: {}, quizzes: {} }; // quizzes[blockKey] = { passed, attempts, everWrong: {questionKey: true}, lastAttemptAt }
+  // quizzes[blockKey] = { passed, attempts, lastAttemptAt,
+  //                       everWrong: { questionKey: { count, picks: [optionIndex] } } }
+  // `picks` holds every distinct wrong option the student selected, indexed by
+  // the option's position in the question. Very old states have `true` instead
+  // of the object — record-quiz-attempt upgrades those on the next attempt.
+  return { answers: {}, feedback: {}, quizzes: {} };
 }
 
 async function getState(token) {
