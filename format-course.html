@@ -1,0 +1,829 @@
+<title>Формат — это забота о читателе</title>
+<style>
+  :root{
+    --bg:#F3F5F8;
+    --surface:#FFFFFF;
+    --surface-2:#EAEDF2;
+    --border:#D8DEE6;
+    --ink:#16202B;
+    --ink-soft:#54626F;
+    --ink-faint:#8994A1;
+    --accent:#256FB5;
+    --accent-ink:#FFFFFF;
+    --good:#268A5A;
+    --good-bg:#E4F3EA;
+    --bad:#B8452F;
+    --bad-bg:#F7E7E2;
+    --tg-bg:#17212B;
+    --tg-bubble:#22303F;
+    --tg-bubble-2:#1B2733;
+    --tg-name:#6FB1EE;
+    --tg-text:#E6EBEF;
+    --tg-link:#79C4F2;
+    --tg-time:#6B7C8C;
+    --font-display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --font-body:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:"SF Mono","Cascadia Mono",Consolas,"Roboto Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0E1520; --surface:#161F2A; --surface-2:#1E2833; --border:#2B3846;
+      --ink:#E7ECF1; --ink-soft:#A2AEBB; --ink-faint:#6D7A88;
+      --accent:#5FA8E8; --accent-ink:#0E1520;
+      --good:#57C08B; --good-bg:#12281E; --bad:#E08469; --bad-bg:#2A1A16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1520; --surface:#161F2A; --surface-2:#1E2833; --border:#2B3846;
+    --ink:#E7ECF1; --ink-soft:#A2AEBB; --ink-faint:#6D7A88;
+    --accent:#5FA8E8; --accent-ink:#0E1520;
+    --good:#57C08B; --good-bg:#12281E; --bad:#E08469; --bad-bg:#2A1A16;
+  }
+  :root[data-theme="light"]{
+    --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#EAEDF2; --border:#D8DEE6;
+    --ink:#16202B; --ink-soft:#54626F; --ink-faint:#8994A1;
+    --accent:#256FB5; --accent-ink:#FFFFFF;
+    --good:#268A5A; --good-bg:#E4F3EA; --bad:#B8452F; --bad-bg:#F7E7E2;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; animation:none !important;} }
+
+  .shell{max-width:720px; margin:0 auto; padding:28px 20px 80px;}
+
+  .masthead{margin-bottom:28px;}
+  .eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);}
+  h1.title{font-family:var(--font-display); font-weight:600; font-size:34px; line-height:1.15; margin:6px 0 8px; text-wrap:balance;}
+  .sub{color:var(--ink-soft); font-size:16px; max-width:56ch;}
+
+  .rail{
+    position:sticky; top:0; z-index:5; background:var(--bg);
+    display:flex; gap:6px; overflow-x:auto; padding:14px 0; margin-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .rail::-webkit-scrollbar{height:0;}
+  .rail button{
+    flex:0 0 auto; font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em;
+    padding:6px 10px; border-radius:7px; border:1px solid var(--border);
+    background:var(--surface); color:var(--ink-faint); cursor:pointer; white-space:nowrap;
+  }
+  .rail button.visited{color:var(--ink-soft); border-color:var(--border);}
+  .rail button.active{background:var(--accent); color:var(--accent-ink); border-color:var(--accent);}
+
+  .step{display:none;}
+  .step.active{display:block; animation:fade .25s ease;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:28px 30px; margin-top:18px;}
+  h2.htitle{font-family:var(--font-display); font-size:24px; font-weight:600; margin:0 0 4px; text-wrap:balance;}
+  .htitle .tag{display:block; font-family:var(--font-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:6px;}
+  p{margin:0 0 14px;}
+  .lead{color:var(--ink-soft); font-size:16px;}
+  strong.mark{background:linear-gradient(transparent 60%, var(--good-bg) 60%); font-weight:600;}
+
+  /* Telegram-style mockup */
+  .tg-panel{background:var(--tg-bg); border-radius:14px; padding:16px 14px; margin:16px 0;}
+  .tg-msg{display:flex; gap:10px; margin-bottom:2px;}
+  .tg-avatar{flex:0 0 34px; width:34px; height:34px; border-radius:50%; background:#3E5872; display:flex; align-items:center; justify-content:center; font-family:var(--font-body); font-size:13px; color:#DCE7F2; font-weight:600;}
+  .tg-col{flex:1; min-width:0;}
+  .tg-name{font-family:var(--font-body); font-size:13.5px; font-weight:600; color:var(--tg-name); margin-bottom:3px;}
+  .tg-bubble{background:var(--tg-bubble); color:var(--tg-text); border-radius:4px 12px 12px 12px; padding:9px 12px 10px; font-size:14.5px; white-space:pre-wrap; word-break:break-word;}
+  .tg-bubble + .tg-meta{margin-top:2px;}
+  .tg-time{font-family:var(--font-mono); font-size:10.5px; color:var(--tg-time); margin-top:4px; text-align:right; padding-right:2px;}
+  .tg-bubble b{color:#fff; font-weight:700;}
+  .tg-bubble .lnk{color:var(--tg-link);}
+  .tg-bubble .mention{color:#8fd3ff; font-weight:600;}
+  .tg-caption{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); text-align:center; margin-top:8px; letter-spacing:.02em;}
+
+  .flip{border:1px solid var(--border); border-radius:10px; overflow:hidden; margin:16px 0;}
+  .flip-toggle{display:flex; border-bottom:1px solid var(--border);}
+  .flip-toggle button{flex:1; padding:10px; font-family:var(--font-mono); font-size:12px; letter-spacing:.03em; background:var(--surface-2); border:none; color:var(--ink-soft); cursor:pointer;}
+  .flip-toggle button.on{background:var(--accent); color:var(--accent-ink);}
+  .flip-body{padding:14px;}
+  .flip-body.raw{font-family:var(--font-mono); font-size:13px; color:var(--ink-soft); white-space:pre-wrap; line-height:1.7; background:var(--surface-2); border-radius:8px; padding:14px;}
+  .flip-pane{display:none;}
+  .flip-pane.show{display:block;}
+
+  .principle{font-family:var(--font-display); font-size:19px; font-weight:600; margin:22px 0 6px;}
+
+  /* MCQ */
+  .mcq{display:grid; gap:12px; margin:16px 0;}
+  .opt{border:1px solid var(--border); border-radius:9px; padding:14px 16px; cursor:pointer; background:var(--surface-2); transition:border-color .15s;}
+  .opt:hover{border-color:var(--accent);}
+  .opt .lbl{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); letter-spacing:.05em;}
+  .opt.correct{border-color:var(--good); background:var(--good-bg);}
+  .opt.wrong{border-color:var(--bad); background:var(--bad-bg);}
+  .mcq-feedback{display:none; margin-top:10px; padding:14px 16px; border-radius:9px; font-size:14.5px;}
+  .mcq-feedback.show{display:block;}
+  .mcq-feedback.correct{background:var(--good-bg); color:var(--ink);}
+  .mcq-feedback.wrong{background:var(--bad-bg); color:var(--ink);}
+
+  /* sort exercise */
+  .sortlist{list-style:none; margin:16px 0; padding:0; display:grid; gap:8px;}
+  .sortlist li{display:flex; align-items:center; gap:10px; background:var(--surface-2); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px;}
+  .sortlist li.header-chip{font-weight:600; font-family:var(--font-display); font-size:15px;}
+  .sortlist .chiptext{flex:1;}
+  .sortlist .arrows{display:flex; gap:4px;}
+  .sortlist .arrows button{width:26px; height:26px; border-radius:6px; border:1px solid var(--border); background:var(--surface); cursor:pointer; color:var(--ink-soft); font-size:12px;}
+  .sort-result{display:none; margin-top:10px; padding:12px 14px; border-radius:9px; font-size:14px;}
+  .sort-result.show{display:block;}
+
+  /* editor */
+  .editor-wrap{display:grid; gap:14px; margin:16px 0;}
+  @media (min-width:640px){ .editor-wrap{grid-template-columns:1fr 1fr;} }
+  .editor-col label{display:block; font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint); margin-bottom:6px;}
+  textarea.editor{width:100%; min-height:220px; resize:vertical; font-family:var(--font-mono); font-size:13px; line-height:1.6; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--surface-2); color:var(--ink);}
+  textarea.editor:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  .hint-row{font-size:12px; color:var(--ink-faint); margin-top:6px;}
+  .checklist{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px; font-size:14px;}
+  .checklist li{display:flex; gap:8px; align-items:flex-start; padding:9px 11px; border-radius:7px; background:var(--surface-2);}
+  .checklist li.pass{background:var(--good-bg);}
+  .checklist li.fail{background:var(--bad-bg);}
+  .checklist .mark{flex:0 0 16px; font-weight:700;}
+  .checklist li.pass .mark{color:var(--good);}
+  .checklist li.fail .mark{color:var(--bad);}
+  .checklist label{display:flex; gap:8px; align-items:flex-start; cursor:pointer;}
+  .checklist input[type=checkbox]{margin-top:3px;}
+
+  .btnrow{display:flex; gap:10px; flex-wrap:wrap; margin-top:14px;}
+  button.btn{font-family:var(--font-body); font-size:14px; font-weight:600; padding:10px 18px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:var(--accent-ink); cursor:pointer;}
+  button.btn.ghost{background:transparent; color:var(--accent); border:1px solid var(--border);}
+  button.btn:focus-visible, .opt:focus-visible, .rail button:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .nav{display:flex; justify-content:space-between; align-items:center; margin-top:26px;}
+  .nav .step-of{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint);}
+
+  .recap{display:grid; gap:10px; margin:16px 0;}
+  .recap .r{display:flex; gap:12px; padding:12px 14px; background:var(--surface-2); border-radius:8px; align-items:baseline;}
+  .recap .n{font-family:var(--font-display); font-weight:700; color:var(--accent); font-size:16px; flex:0 0 20px;}
+  .recap .t{font-weight:600;}
+  .recap .d{color:var(--ink-soft); font-size:13.5px;}
+
+  code.tag{font-family:var(--font-mono); font-size:.92em; background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+</style>
+
+<div class="shell">
+
+  <div class="masthead">
+    <div class="eyebrow">Мини-курс · оформление сообщений</div>
+    <h1 class="title">Формат — это забота о читателе</h1>
+    <p class="sub">Одну и ту же новость можно написать так, что её прочитают за пять секунд — или так, что придётся переспрашивать. Разберём пять приёмов на живых примерах из рабочих чатов и потренируемся на своих.</p>
+  </div>
+
+  <nav class="rail" id="rail"></nav>
+
+  <!-- INTRO -->
+  <section class="step active" data-step="intro">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Разбор</span>Одна и та же информация — два результата</h2>
+      <p class="lead">Вот реальное сообщение из рабочего чата (имена и ссылки изменены). Переключите вкладку — и увидите ту же самую информацию, просто без оформления.</p>
+
+      <div class="flip" id="flip-intro">
+        <div class="flip-toggle">
+          <button data-pane="formatted" class="on">С оформлением</button>
+          <button data-pane="plain">Без оформления</button>
+        </div>
+        <div class="flip-body">
+          <div class="flip-pane show" data-pane="formatted">
+            <div class="tg-panel">
+              <div class="tg-msg">
+                <div class="tg-avatar">Л</div>
+                <div class="tg-col">
+                  <div class="tg-name">Лиля</div>
+                  <div class="tg-bubble" id="tg-intro-formatted"></div>
+                  <div class="tg-time">15:32</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flip-pane" data-pane="plain">
+            <div class="flip-body raw" id="intro-plain-text"></div>
+          </div>
+        </div>
+      </div>
+
+      <p>Информация в обоих случаях одна и та же. Разница — в том, сколько усилий нужно приложить, чтобы её достать. Дальше разберём, из каких приёмов складывается левый вариант.</p>
+      <div class="nav">
+        <span class="step-of">Шаг 1 из 8</span>
+        <button class="btn" data-next>Начать →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 1 -->
+  <section class="step" data-step="l1">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Приём 1 из 5</span>Жирный — это навигация, а не украшение</h2>
+      <p class="lead">Жирный текст размечает не «важное», а <b>единицу</b>, по которой читатель ищет своё: название города, экрана, креатива. Это метка для беглого взгляда, а не эмоциональное усиление.</p>
+
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Л</div>
+          <div class="tg-col">
+            <div class="tg-name">Лиля</div>
+            <div class="tg-bubble" id="tg-l1-example"></div>
+            <div class="tg-time">11:57</div>
+          </div>
+        </div>
+      </div>
+      <p class="tg-caption">Жирным — только названия города и кампании. Остальное — обычный текст.</p>
+
+      <p class="principle">Задание</p>
+      <p>Вам нужно быстро найти статус экрана <code class="tag">Screen-22</code>. Какой вариант проще просканировать глазами?</p>
+
+      <div class="mcq" id="mcq-l1">
+        <div class="opt" data-opt="a">
+          <div class="lbl">Вариант А</div>
+          <div class="tg-bubble" style="white-space:pre-wrap;" id="mcq-l1-a"></div>
+        </div>
+        <div class="opt" data-opt="b">
+          <div class="lbl">Вариант Б</div>
+          <div class="tg-bubble" style="white-space:pre-wrap;" id="mcq-l1-b"></div>
+        </div>
+      </div>
+      <div class="mcq-feedback" id="mcq-l1-feedback"></div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 2 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>Далее →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 2 -->
+  <section class="step" data-step="l2">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Приём 2 из 5</span>Пустая строка отделяет одну мысль от другой</h2>
+      <p class="lead">Пустая строка — сигнал «дальше отдельная тема, если она не про тебя — пропусти». Внутри одного блока строки идут подряд, между блоками — воздух.</p>
+
+      <p class="principle">Задание</p>
+      <p>Ниже — вперемешку куски одного сообщения: два блока по городам и итоговая строка. Расставьте их по порядку: сначала первый город со своими пунктами, затем второй, затем итог.</p>
+
+      <ul class="sortlist" id="sortlist"></ul>
+      <div class="btnrow">
+        <button class="btn" id="sort-check">Проверить порядок</button>
+        <button class="btn ghost" id="sort-shuffle">Перемешать заново</button>
+      </div>
+      <div class="sort-result" id="sort-result"></div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 3 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>Далее →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 3 -->
+  <section class="step" data-step="l3">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Приём 3 из 5</span>Один шаблон — на все однотипные пункты</h2>
+      <p class="lead">Когда пунктов несколько (ролики, экраны, задачи), стройте каждый по одной и той же формуле. После первого пункта читатель уже понял структуру — и дальше просто выхватывает переменную часть, не перечитывая конструкцию заново.</p>
+
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Л</div>
+          <div class="tg-col">
+            <div class="tg-name">Лиля</div>
+            <div class="tg-bubble" id="tg-l3-example"></div>
+            <div class="tg-time">14:17</div>
+          </div>
+        </div>
+      </div>
+      <p class="tg-caption">Формат / Подрядчик — статус. Стандартная фраза. Один шаблон, четыре раза подряд.</p>
+
+      <p class="principle">Задание</p>
+      <p>Вам нужен только результат по каждому ролику. Какой вариант читается быстрее?</p>
+      <div class="mcq" id="mcq-l3">
+        <div class="opt" data-opt="a">
+          <div class="lbl">Вариант А</div>
+          <div class="tg-bubble" id="mcq-l3-a"></div>
+        </div>
+        <div class="opt" data-opt="b">
+          <div class="lbl">Вариант Б</div>
+          <div class="tg-bubble" id="mcq-l3-b"></div>
+        </div>
+      </div>
+      <div class="mcq-feedback" id="mcq-l3-feedback"></div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 4 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>Далее →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 4 -->
+  <section class="step" data-step="l4">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Приём 4 из 5</span>Упоминания и ссылки — каждое на своей строке</h2>
+      <p class="lead">Если сообщение адресовано нескольким людям по разным темам — у каждого имени своя строка, а ссылка идёт сразу под ней, а не посередине предложения. Тогда человек, которого касается один пункт, прочитает одну строку и закроет чат.</p>
+
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Л</div>
+          <div class="tg-col">
+            <div class="tg-name">Лиля</div>
+            <div class="tg-bubble" id="tg-l4-example"></div>
+            <div class="tg-time">15:32</div>
+          </div>
+        </div>
+      </div>
+
+      <p class="principle">Задание</p>
+      <p>Слева — исходный текст без разметки. Перепишите его справа: используйте <code class="tag">*звёздочки*</code> для жирного (это markdown-синтаксис Телеграма) и пустую строку между разными адресатами. Ссылки поставьте отдельной строкой.</p>
+
+      <div class="editor-wrap">
+        <div class="editor-col">
+          <label>Исходный текст</label>
+          <div class="flip-body raw" id="l4-source"></div>
+        </div>
+        <div class="editor-col">
+          <label>Ваша версия</label>
+          <textarea class="editor" id="l4-editor" placeholder="Начните писать здесь…"></textarea>
+          <div class="hint-row">*текст* → <b>жирный</b>. Пустая строка между абзацами. Ссылку — отдельной строкой.</div>
+        </div>
+      </div>
+
+      <p class="principle" style="margin-top:22px;">Предпросмотр</p>
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Вы</div>
+          <div class="tg-col">
+            <div class="tg-name">Вы</div>
+            <div class="tg-bubble" id="l4-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="checklist" id="l4-checklist"></ul>
+      <div class="btnrow"><button class="btn" id="l4-check">Проверить</button></div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 5 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>Далее →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LESSON 5 -->
+  <section class="step" data-step="l5">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Приём 5 из 5</span>Явное начало и явный итог</h2>
+      <p class="lead">Сообщение должно быть понятно, даже если прочитать только первую и последнюю строки: первая — кому и о чём, последняя — итог или следующий шаг. Всё, что между ними, — детали, которые можно пропустить.</p>
+
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Л</div>
+          <div class="tg-col">
+            <div class="tg-name">Лиля</div>
+            <div class="tg-bubble" id="tg-l5-example"></div>
+            <div class="tg-time">15:32</div>
+          </div>
+        </div>
+      </div>
+      <p class="tg-caption">Первая строка — приветствие и повод. Последняя — явный итог: «пишите, посмотрим».</p>
+
+      <p class="principle">Задание</p>
+      <p>Слева — те же факты, но без начала и без итога. Допишите открывающую и закрывающую строку.</p>
+
+      <div class="editor-wrap">
+        <div class="editor-col">
+          <label>Исходный текст</label>
+          <div class="flip-body raw" id="l5-source"></div>
+        </div>
+        <div class="editor-col">
+          <label>Ваша версия</label>
+          <textarea class="editor" id="l5-editor" placeholder="Начните писать здесь…"></textarea>
+          <div class="hint-row">Первая строка — кому и о чём. Последняя — что делать дальше.</div>
+        </div>
+      </div>
+
+      <p class="principle" style="margin-top:22px;">Предпросмотр</p>
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Вы</div>
+          <div class="tg-col">
+            <div class="tg-name">Вы</div>
+            <div class="tg-bubble" id="l5-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="checklist" id="l5-checklist"></ul>
+      <div class="btnrow"><button class="btn" id="l5-check">Проверить</button></div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 6 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>Далее →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="step" data-step="final">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Итоговая практика</span>Соберите всё вместе</h2>
+      <p class="lead">Внизу — «сырое» сообщение, в котором смешаны статусы по экранам, ролики и задачи по трекеру. Отформатируйте его целиком, применяя все пять приёмов.</p>
+
+      <div class="editor-wrap">
+        <div class="editor-col">
+          <label>Исходный текст</label>
+          <div class="flip-body raw" id="final-source"></div>
+        </div>
+        <div class="editor-col">
+          <label>Ваша версия</label>
+          <textarea class="editor" id="final-editor" style="min-height:280px;" placeholder="Начните писать здесь…"></textarea>
+          <div class="hint-row">*звёздочки* — жирный. Пустая строка — новый блок. Ссылки и адресаты — на своей строке.</div>
+        </div>
+      </div>
+
+      <p class="principle" style="margin-top:22px;">Предпросмотр</p>
+      <div class="tg-panel">
+        <div class="tg-msg">
+          <div class="tg-avatar">Вы</div>
+          <div class="tg-col">
+            <div class="tg-name">Вы</div>
+            <div class="tg-bubble" id="final-preview"></div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="checklist" id="final-checklist"></ul>
+      <div class="btnrow">
+        <button class="btn" id="final-check">Проверить</button>
+        <button class="btn ghost" id="final-reveal">Показать эталон</button>
+      </div>
+      <div class="flip" id="final-answer-wrap" style="display:none; margin-top:14px;">
+        <div class="tg-panel" style="margin:0;">
+          <div class="tg-msg">
+            <div class="tg-avatar">Л</div>
+            <div class="tg-col">
+              <div class="tg-name">Эталон</div>
+              <div class="tg-bubble" id="final-answer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <span class="step-of">Шаг 7 из 8</span>
+        <div class="btnrow"><button class="btn ghost" data-prev>← Назад</button><button class="btn" data-next>К памятке →</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECAP -->
+  <section class="step" data-step="recap">
+    <div class="card">
+      <h2 class="htitle"><span class="tag">Памятка</span>Пять приёмов на будущее</h2>
+      <div class="recap">
+        <div class="r"><div class="n">1</div><div><div class="t">Жирный — навигация</div><div class="d">Выделяйте название/сущность, по которой ищут своё, а не эмоцию или срочность.</div></div></div>
+        <div class="r"><div class="n">2</div><div><div class="t">Пустая строка — новая мысль</div><div class="d">Внутри блока строки идут подряд, между блоками — воздух.</div></div></div>
+        <div class="r"><div class="n">3</div><div><div class="t">Один шаблон для однотипных пунктов</div><div class="d">Пусть каждый пункт списка звучит по одной формуле — читатель учится ей один раз.</div></div></div>
+        <div class="r"><div class="n">4</div><div><div class="t">Адресат и ссылка — на своей строке</div><div class="d">Не прячьте @упоминания и ссылки в середину предложения.</div></div></div>
+        <div class="r"><div class="n">5</div><div><div class="t">Явное начало и явный итог</div><div class="d">Первая строка — кому и о чём, последняя — что делать дальше.</div></div></div>
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="copy-recap">Скопировать памятку</button>
+        <button class="btn ghost" data-goto="intro">Пройти курс заново</button>
+      </div>
+      <div class="nav" style="justify-content:flex-end;">
+        <button class="btn ghost" data-prev>← Назад</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+
+  var steps = ["intro","l1","l2","l3","l4","l5","final","recap"];
+  var stepTitles = {intro:"Разбор", l1:"1. Жирный", l2:"2. Пустая строка", l3:"3. Шаблон", l4:"4. Адресаты", l5:"5. Начало/итог", final:"Практика", recap:"Памятка"};
+  var current = 0;
+  var visited = {intro:true};
+
+  function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+  function mdToBubble(text){
+    var t = esc(text);
+    t = t.replace(/(https?:\/\/[^\s]+)/g, '<span class="lnk">$1</span>');
+    t = t.replace(/(^|\n)(@[A-Za-zА-Яа-яЁё0-9_]+)/g, '$1<span class="mention">$2</span>');
+    var paras = t.split(/\n\s*\n/);
+    return paras.map(function(p){
+      return p.split("\n").join("<br>");
+    }).join("<br><br>").replace(/\*([^*\n]+)\*/g, "<b>$1</b>");
+  }
+
+  function render(id, text){ document.getElementById(id).innerHTML = mdToBubble(text); }
+
+  // ---------- rail ----------
+  var rail = document.getElementById("rail");
+  steps.forEach(function(id){
+    var b = document.createElement("button");
+    b.textContent = stepTitles[id];
+    b.dataset.goto = id;
+    rail.appendChild(b);
+  });
+
+  function paintRail(){
+    Array.prototype.forEach.call(rail.children, function(b){
+      b.classList.toggle("active", b.dataset.goto === steps[current]);
+      b.classList.toggle("visited", !!visited[b.dataset.goto] && b.dataset.goto !== steps[current]);
+    });
+  }
+
+  function goTo(id){
+    var idx = steps.indexOf(id);
+    if(idx < 0) return;
+    current = idx;
+    visited[id] = true;
+    document.querySelectorAll(".step").forEach(function(s){
+      s.classList.toggle("active", s.dataset.step === id);
+    });
+    paintRail();
+    window.scrollTo({top:0, behavior:"auto"});
+  }
+
+  document.addEventListener("click", function(e){
+    var t = e.target.closest("[data-goto]");
+    if(t){ goTo(t.dataset.goto); return; }
+    if(e.target.closest("[data-next]")){ goTo(steps[Math.min(current+1, steps.length-1)]); return; }
+    if(e.target.closest("[data-prev]")){ goTo(steps[Math.max(current-1, 0)]); return; }
+  });
+
+  paintRail();
+
+  // ---------- intro flip ----------
+  var introFormatted =
+"Всем привет!\n\n" +
+"@Игорь по этим задачам вернёмся в среду, до конца дня\n" +
+"https://tracker.example/PROJ-1986\n" +
+"https://tracker.example/PROJ-1985\n\n" +
+"@Анна тут вернёмся до конца дня четверга\n" +
+"https://tracker.example/PROJ-2005\n\n" +
+"@Мария FYI по ресурсу\n\n" +
+"Если получится принести что-то раньше — направим сразу по готовности, выше указаны *крайние сроки*\n\n" +
+"Если возникнет необходимость скорректировать приоритизацию — пишите, посмотрим, что можно будет сделать";
+
+  var introPlain =
+"всем привет по задачам игоря вернемся в среду до конца дня вот ссылки https://tracker.example/PROJ-1986 " +
+"https://tracker.example/PROJ-1985 а по задаче анны вернемся до конца дня четверга ссылка https://tracker.example/PROJ-2005 " +
+"марии просто для информации по ресурсу если получится принести что-то раньше направим сразу по готовности " +
+"но вообще указанные сроки крайние если что-то нужно скорректировать по приоритетам пишите посмотрим что можно сделать";
+
+  render("tg-intro-formatted", introFormatted);
+  document.getElementById("intro-plain-text").textContent = introPlain;
+
+  var flip = document.getElementById("flip-intro");
+  flip.querySelectorAll(".flip-toggle button").forEach(function(b){
+    b.addEventListener("click", function(){
+      flip.querySelectorAll(".flip-toggle button").forEach(function(x){x.classList.remove("on");});
+      b.classList.add("on");
+      flip.querySelectorAll(".flip-pane").forEach(function(p){
+        p.classList.toggle("show", p.dataset.pane === b.dataset.pane);
+      });
+    });
+  });
+
+  // ---------- L1 ----------
+  render("tg-l1-example",
+"*Кампания / Казань*\nSCR32 — очень мало эфира на экране\n0060-BB-A — тоже мало эфира, но уже 2 выхода за сегодня\n\n*Кампания / Краснодар*\nKRD028BDSSIP — нет эфира");
+
+  var l1a = "*Screen-14 (ТЦ Атриум)*\nПоказов за сутки: 812. Работает штатно.\n\n*Screen-22 (Аэропорт, зал А)*\nПоказов за сутки: 40. Слишком мало — проверяем расписание.";
+  var l1b = "Screen-14 (ТЦ Атриум) — *всё отлично*, показов за сутки 812, работает *штатно*.\nScreen-22 (Аэропорт, зал А) — *ОЧЕНЬ МАЛО* показов, всего 40, *срочно* проверяем расписание!";
+  render("mcq-l1-a", l1a);
+  render("mcq-l1-b", l1b);
+
+  function setupMCQ(containerId, feedbackId, correct, correctMsg, wrongMsg){
+    var box = document.getElementById(containerId);
+    var fb = document.getElementById(feedbackId);
+    box.querySelectorAll(".opt").forEach(function(opt){
+      opt.addEventListener("click", function(){
+        box.querySelectorAll(".opt").forEach(function(o){o.classList.remove("correct","wrong");});
+        var chosen = opt.dataset.opt;
+        opt.classList.add(chosen === correct ? "correct" : "wrong");
+        if(chosen !== correct){
+          box.querySelector('[data-opt="'+correct+'"]').classList.add("correct");
+        }
+        fb.className = "mcq-feedback show " + (chosen === correct ? "correct" : "wrong");
+        fb.textContent = chosen === correct ? correctMsg : wrongMsg;
+      });
+    });
+  }
+
+  setupMCQ("mcq-l1", "mcq-l1-feedback", "a",
+    "Верно. В варианте А жирным помечены сами объекты (Screen-14, Screen-22) — по ним можно скользить взглядом и остановиться на нужном. В Б жирным выделены эмоции и слово «срочно» — это не помогает найти нужный экран, приходится читать всё подряд.",
+    "На самом деле проще вариант А. В нём жирным помечены названия экранов — вы находите «Screen-22» одним движением глаз. В варианте Б жирный расставлен на эмоциональных словах, а не на объекте поиска, поэтому всё равно нужно прочитать всё сообщение целиком.");
+
+  // ---------- L2 sort ----------
+  var sortItems = [
+    {id:1, text:"Кампания / Казань", header:true},
+    {id:2, text:"SCR32 — очень мало эфира на экране"},
+    {id:3, text:"0060-BB-A — мало эфира, было 2 выхода"},
+    {id:4, text:"Кампания / Краснодар", header:true},
+    {id:5, text:"KRD028BDSSIP — нет эфира"},
+    {id:6, text:"Решаем вопрос, вернёмся с обратной связью"}
+  ];
+  var targetOrder = [1,2,3,4,5,6];
+  var order = [];
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = [3,0,4,1,5,2][i % 6]; // deterministic pseudo-shuffle, no Math.random
+      var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+    }
+    return a;
+  }
+
+  function renderSort(){
+    order = shuffle(targetOrder);
+    var ul = document.getElementById("sortlist");
+    ul.innerHTML = "";
+    order.forEach(function(id, idx){
+      var item = sortItems.filter(function(s){return s.id===id;})[0];
+      var li = document.createElement("li");
+      if(item.header) li.classList.add("header-chip");
+      li.dataset.id = id;
+      li.innerHTML = '<span class="chiptext"></span><span class="arrows"><button data-dir="up" aria-label="Выше">↑</button><button data-dir="down" aria-label="Ниже">↓</button></span>';
+      li.querySelector(".chiptext").textContent = item.text;
+      ul.appendChild(li);
+    });
+    document.getElementById("sort-result").className = "sort-result";
+  }
+  renderSort();
+
+  document.getElementById("sortlist").addEventListener("click", function(e){
+    var btn = e.target.closest("button");
+    if(!btn) return;
+    var li = btn.closest("li");
+    var ul = li.parentElement;
+    if(btn.dataset.dir === "up" && li.previousElementSibling){
+      ul.insertBefore(li, li.previousElementSibling);
+    } else if(btn.dataset.dir === "down" && li.nextElementSibling){
+      ul.insertBefore(li.nextElementSibling, li);
+    }
+  });
+
+  document.getElementById("sort-shuffle").addEventListener("click", renderSort);
+
+  document.getElementById("sort-check").addEventListener("click", function(){
+    var ul = document.getElementById("sortlist");
+    var current = Array.prototype.map.call(ul.children, function(li){ return parseInt(li.dataset.id,10); });
+    var ok = JSON.stringify(current) === JSON.stringify(targetOrder);
+    var res = document.getElementById("sort-result");
+    res.className = "sort-result show " + (ok ? "" : "");
+    res.style.background = ok ? "var(--good-bg)" : "var(--bad-bg)";
+    res.textContent = ok
+      ? "Верно. Пустая строка встанет между пунктом 3 и заголовком «Краснодар», и ещё раз — перед итоговой строкой. Внутри одного города строки идут подряд, без пустых строк."
+      : "Пока не то. Подсказка: сгруппируйте пункты по заголовку города (заголовок и его пункты — один блок), а итоговую строку поставьте последней.";
+  });
+
+  // ---------- L3 ----------
+  render("tg-l3-example",
+"Тогда резюмирую по роликам:\n\n*Ставрополь_640x880_5сек*\nПодрядчик А — ролик отклонён из-за некорректной длительности. На остальных подрядчиков не смотрим.\n\n*Воронеж_1440x480_5сек*\nПодрядчик Б — ролик одобрен. На остальных подрядчиков не смотрим.\n\n*Воронеж_1440x720_5сек*\nПодрядчик А — ролик на модерации. На остальных подрядчиков не смотрим.");
+
+  var l3a = "*Экран-01*\nПодрядчик А — одобрено. Показы идут по графику.\n\n*Экран-02*\nПодрядчик В — на модерации. Показы пока не идут.\n\n*Экран-03*\nПодрядчик А — отклонено, неверная длительность.\n\n*Экран-04*\nПодрядчик Б — одобрено. Показы идут по графику.";
+  var l3b = "По экрану-01 подрядчик А, вроде всё одобрено и показы идут норм. А вот экран-02, подрядчик В, тут на модерации всё ещё, показов нет пока. Что с экраном-03 — там подрядчик А, отклонили из-за длительности, надо переделывать. Ну и по экрану-04, там подрядчик Б, тоже вроде одобрили, идёт по графику.";
+  render("mcq-l3-a", l3a);
+  render("mcq-l3-b", l3b);
+
+  setupMCQ("mcq-l3", "mcq-l3-feedback", "a",
+    "Верно. В варианте А все четыре пункта построены по одной формуле «Экран → подрядчик → статус». Прочитав первый, вы уже знаете, куда смотреть у остальных трёх. В Б каждая фраза построена иначе, и каждую нужно разбирать заново.",
+    "Проще вариант А: один и тот же шаблон для всех пунктов позволяет читать по диагонали. В Б формулировки каждый раз разные — «вроде всё», «тут на модерации всё ещё» — и это заставляет вчитываться в каждую фразу отдельно.");
+
+  // ---------- L4 ----------
+  render("tg-l4-example",
+"@Игорь по этим задачам вернёмся в среду, до конца дня\nhttps://tracker.example/PROJ-1986\nhttps://tracker.example/PROJ-1985\n\n@Анна тут вернёмся до конца дня четверга\nhttps://tracker.example/PROJ-2005\n\n@Мария FYI по ресурсу");
+
+  var l4source = "привет игорю и анне нужно посмотреть задачи у игоря вот тикеты https://tracker.example/PROJ-3011 и https://tracker.example/PROJ-3012 сделаем плиз до пятницы а анне отдельно тикет https://tracker.example/PROJ-3015 он не такой срочный можно на следующей неделе";
+  document.getElementById("l4-source").textContent = l4source;
+
+  var l4editor = document.getElementById("l4-editor");
+  var l4preview = document.getElementById("l4-preview");
+  l4editor.addEventListener("input", function(){ render("l4-preview", l4editor.value); });
+
+  function countBold(text){ return (text.match(/\*[^*\n]+\*/g)||[]).length; }
+  function boldRatio(text){
+    var m = text.match(/\*([^*\n]+)\*/g)||[];
+    var chars = m.reduce(function(s,x){return s+x.length;},0);
+    return text.length ? chars/text.length : 0;
+  }
+  function paraCount(text){ return text.split(/\n\s*\n/).map(function(s){return s.trim();}).filter(Boolean).length; }
+  function linksOwnLine(text){
+    var urls = text.match(/https?:\/\/\S+/g);
+    if(!urls || !urls.length) return null;
+    var lines = text.split("\n").map(function(l){return l.trim();});
+    return urls.every(function(u){ return lines.indexOf(u) !== -1; });
+  }
+  function mentionsStartLine(text){
+    var all = text.match(/@[A-Za-zА-Яа-яЁё0-9_]+/g);
+    if(!all || !all.length) return null;
+    var starting = text.match(/(^|\n)@[A-Za-zА-Яа-яЁё0-9_]+/g)||[];
+    return starting.length === all.length;
+  }
+
+  function checklistItem(pass, text){
+    var cls = pass === null ? "" : (pass ? "pass" : "fail");
+    var mark = pass === null ? "•" : (pass ? "✓" : "✗");
+    return '<li class="'+cls+'"><span class="mark">'+mark+'</span><span>'+text+'</span></li>';
+  }
+
+  document.getElementById("l4-check").addEventListener("click", function(){
+    var text = l4editor.value;
+    var ul = document.getElementById("l4-checklist");
+    var bold = countBold(text) >= 1 && boldRatio(text) < 0.5;
+    var paras = paraCount(text) >= 3;
+    var links = linksOwnLine(text);
+    var mentions = mentionsStartLine(text);
+    ul.innerHTML =
+      checklistItem(bold, "Есть жирный акцент (например, на сроке), и он не залил весь текст") +
+      checklistItem(paras, "Минимум 3 смысловых блока, разделённых пустой строкой") +
+      checklistItem(links, links===null ? "Ссылка не найдена в тексте" : (links ? "Ссылки стоят на отдельной строке" : "Ссылка спрятана в середине строки — вынесите её отдельно")) +
+      checklistItem(mentions, mentions===null ? "Упоминание не найдено" : (mentions ? "Каждое @упоминание начинает свою строку" : "@упоминание не в начале строки")) +
+      '<li><label><input type="checkbox"> Каждому адресату отведён свой абзац, а не общий список в одном предложении (отметьте сами)</label></li>';
+  });
+
+  // ---------- L5 ----------
+  render("tg-l5-example",
+"Всем привет!\n\n@Игорь по этим задачам вернёмся в среду, до конца дня\n[...]\n\nЕсли возникнет необходимость скорректировать приоритизацию — пишите, посмотрим, что можно будет сделать");
+
+  var l5source = "по экрану scr32 очень мало эфира по экрану 0060-bb-a тоже мало эфира но было 2 выхода за сегодня по краснодару krd028bdssip вообще нет эфира вопрос пока не решён";
+  document.getElementById("l5-source").textContent = l5source;
+
+  var l5editor = document.getElementById("l5-editor");
+  l5editor.addEventListener("input", function(){ render("l5-preview", l5editor.value); });
+
+  function firstLine(text){ var lines = text.split("\n").map(function(s){return s.trim();}).filter(Boolean); return lines[0]||""; }
+  function lastLine(text){ var lines = text.split("\n").map(function(s){return s.trim();}).filter(Boolean); return lines[lines.length-1]||""; }
+
+  document.getElementById("l5-check").addEventListener("click", function(){
+    var text = l5editor.value;
+    var ul = document.getElementById("l5-checklist");
+    var fl = firstLine(text), ll = lastLine(text);
+    var hasOpen = fl.length > 0 && fl.length <= 60;
+    var hasClose = ll.length > 0 && ll !== fl && ll.length <= 100;
+    var multiline = paraCount(text) >= 2;
+    ul.innerHTML =
+      checklistItem(hasOpen, "Первая строка короткая и обозначает тему/адресата") +
+      checklistItem(hasClose, "Последняя строка — отдельный итог или следующий шаг, а не просто ещё один факт") +
+      checklistItem(multiline, "Открытие и итог визуально отделены от основного текста пустой строкой") +
+      '<li><label><input type="checkbox"> Если прочитать только первую и последнюю строку — смысл понятен (отметьте сами)</label></li>';
+  });
+
+  // ---------- FINAL ----------
+  var finalSource = "привет статус по экранам такой в казани по scr32 почти нет эфира а по 0060-bb-a также мало эфира но было 2 выхода сегодня по краснодару krd028bdssip вообще нет эфира отдельно по роликам ставрополь 640x880 5 сек ролик от подрядчика а отклонен из-за длительности воронеж 1440x480 5 сек ролик от подрядчика б одобрен по задачам трекера у игоря два тикета https://tracker.example/PROJ-4041 и https://tracker.example/PROJ-4042 сделаем до среды у анны тикет https://tracker.example/PROJ-4050 сделаем до четверга если что-то будет готово раньше пришлём сразу если нужно поменять приоритеты пишите разберёмся";
+  document.getElementById("final-source").textContent = finalSource;
+
+  var finalAnswer =
+"Статус по экранам:\n\n*Казань*\nSCR32 — почти нет эфира\n0060-BB-A — мало эфира, было 2 выхода сегодня\n\n*Краснодар*\nKRD028BDSSIP — нет эфира\n\n*Ставрополь_640x880_5сек*\nПодрядчик А — отклонён, неверная длительность\n\n*Воронеж_1440x480_5сек*\nПодрядчик Б — одобрен\n\n@Игорь по этим тикетам — до среды\nhttps://tracker.example/PROJ-4041\nhttps://tracker.example/PROJ-4042\n\n@Анна по этому тикету — до четверга\nhttps://tracker.example/PROJ-4050\n\nЕсли будет готово раньше — пришлём сразу. Если нужно поменять приоритеты — пишите, разберёмся.";
+
+  var finalEditor = document.getElementById("final-editor");
+  finalEditor.addEventListener("input", function(){ render("final-preview", finalEditor.value); });
+
+  document.getElementById("final-check").addEventListener("click", function(){
+    var text = finalEditor.value;
+    var ul = document.getElementById("final-checklist");
+    var bold = countBold(text) >= 2 && boldRatio(text) < 0.5;
+    var paras = paraCount(text) >= 4;
+    var links = linksOwnLine(text);
+    var mentions = mentionsStartLine(text);
+    ul.innerHTML =
+      checklistItem(bold, "Жирным помечены названия/сущности (город, формат ролика), а не случайные слова") +
+      checklistItem(paras, "Минимум 4 смысловых блока, разделённых пустой строкой") +
+      checklistItem(links, links===null ? "Ссылка не найдена" : (links ? "Ссылки на отдельных строках" : "Ссылка спрятана в тексте — вынесите отдельно")) +
+      checklistItem(mentions, mentions===null ? "Упоминание не найдено" : (mentions ? "Упоминания начинают свою строку" : "Упоминание не в начале строки")) +
+      '<li><label><input type="checkbox"> Однотипные пункты (экраны, ролики) оформлены по одному шаблону (отметьте сами)</label></li>' +
+      '<li><label><input type="checkbox"> Первая строка — о чём сообщение, последняя — итог/следующий шаг (отметьте сами)</label></li>';
+  });
+
+  document.getElementById("final-reveal").addEventListener("click", function(){
+    render("final-answer", finalAnswer);
+    var wrap = document.getElementById("final-answer-wrap");
+    wrap.style.display = wrap.style.display === "none" ? "block" : "none";
+  });
+
+  // ---------- recap copy ----------
+  document.getElementById("copy-recap").addEventListener("click", function(){
+    var txt = "Пять приёмов оформления сообщений:\n" +
+      "1. Жирный — навигация: выделяйте название/сущность, а не эмоцию.\n" +
+      "2. Пустая строка — новая мысль: между блоками воздух, внутри блока — нет.\n" +
+      "3. Один шаблон для однотипных пунктов.\n" +
+      "4. Адресат и ссылка — на своей строке.\n" +
+      "5. Явное начало и явный итог: первая строка — о чём, последняя — что делать.";
+    var btn = document.getElementById("copy-recap");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){
+        var old = btn.textContent; btn.textContent = "Скопировано ✓";
+        setTimeout(function(){ btn.textContent = old; }, 1800);
+      }).catch(function(){ btn.textContent = "Не удалось скопировать"; });
+    }
+  });
+
+})();
+</script>

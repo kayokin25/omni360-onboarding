@@ -1,0 +1,1761 @@
+<title>Онбординг Omni360 — программа обучения</title>
+<style>
+  :root{
+    --bg:#F3F5F8;
+    --surface:#FFFFFF;
+    --surface-2:#EAEDF2;
+    --surface-3:#E1E6EE;
+    --border:#D8DEE6;
+    --ink:#16202B;
+    --ink-soft:#54626F;
+    --ink-faint:#8994A1;
+    --accent:#256FB5;
+    --accent-ink:#FFFFFF;
+    --accent-bg:#E3EDF7;
+    --good:#268A5A;
+    --good-bg:#E4F3EA;
+    --warn:#9C6510;
+    --warn-bg:#F6ECDA;
+    --bad:#B8452F;
+    --bad-bg:#F7E7E2;
+    --font-display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --font-body:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:"SF Mono","Cascadia Mono",Consolas,"Roboto Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0E1520; --surface:#161F2A; --surface-2:#1E2833; --surface-3:#243040; --border:#2B3846;
+      --ink:#E7ECF1; --ink-soft:#A2AEBB; --ink-faint:#6D7A88;
+      --accent:#5FA8E8; --accent-ink:#0E1520; --accent-bg:#152634;
+      --good:#57C08B; --good-bg:#12281E;
+      --warn:#D9A45B; --warn-bg:#2A2115;
+      --bad:#E08469; --bad-bg:#2A1A16;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0E1520; --surface:#161F2A; --surface-2:#1E2833; --surface-3:#243040; --border:#2B3846;
+    --ink:#E7ECF1; --ink-soft:#A2AEBB; --ink-faint:#6D7A88;
+    --accent:#5FA8E8; --accent-ink:#0E1520; --accent-bg:#152634;
+    --good:#57C08B; --good-bg:#12281E;
+    --warn:#D9A45B; --warn-bg:#2A2115;
+    --bad:#E08469; --bad-bg:#2A1A16;
+  }
+  :root[data-theme="light"]{
+    --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#EAEDF2; --surface-3:#E1E6EE; --border:#D8DEE6;
+    --ink:#16202B; --ink-soft:#54626F; --ink-faint:#8994A1;
+    --accent:#256FB5; --accent-ink:#FFFFFF; --accent-bg:#E3EDF7;
+    --good:#268A5A; --good-bg:#E4F3EA;
+    --warn:#9C6510; --warn-bg:#F6ECDA;
+    --bad:#B8452F; --bad-bg:#F7E7E2;
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--font-body); line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none !important; animation:none !important; scroll-behavior:auto !important;} }
+  html{scroll-behavior:smooth;}
+
+  .shell{max-width:860px; margin:0 auto; padding:28px 20px 96px;}
+
+  /* ---------- masthead ---------- */
+  .masthead{margin-bottom:22px;}
+  .eyebrow{font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint);}
+  h1.title{font-family:var(--font-display); font-weight:600; font-size:38px; line-height:1.12; margin:8px 0 10px; text-wrap:balance;}
+  .sub{color:var(--ink-soft); font-size:16px; max-width:60ch;}
+  .srclinks{display:flex; flex-direction:column; gap:6px; margin-top:14px;}
+  .srclink{display:inline-flex; align-items:center; gap:7px; font-size:13.5px; color:var(--accent); text-decoration:none; border-bottom:1px solid transparent; width:fit-content;}
+  .srclink:hover{border-bottom-color:currentColor;}
+  .srclink .m{font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint);}
+
+  /* ---------- progress strip (график вещания motif) ---------- */
+  .progress{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:22px 0 6px;}
+  .progress-top{display:flex; justify-content:space-between; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:12px;}
+  .progress-top h2{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); font-weight:500; margin:0;}
+  .progress-num{font-family:var(--font-mono); font-size:13px; color:var(--ink-soft); font-variant-numeric:tabular-nums;}
+  .progress-num b{color:var(--ink); font-weight:600;}
+  .cells{display:flex; gap:3px; flex-wrap:wrap;}
+  .cell{width:100%; max-width:34px; flex:1 1 18px; height:22px; border-radius:3px; background:var(--surface-2); border:1px solid var(--border); position:relative; overflow:hidden;}
+  .cell .fill{position:absolute; inset:0; width:0%; background:var(--accent); transition:width .25s ease;}
+  .cell.done{border-color:var(--accent);}
+  .cell-legend{display:flex; gap:16px; margin-top:10px; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.04em; color:var(--ink-faint); text-transform:uppercase; flex-wrap:wrap;}
+  .cell-legend span{display:inline-flex; align-items:center; gap:5px;}
+  .swatch{width:10px; height:10px; border-radius:2px; border:1px solid var(--border); background:var(--surface-2);}
+  .swatch.on{background:var(--accent); border-color:var(--accent);}
+  .resetbtn{font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase; background:none; border:none; color:var(--ink-faint); cursor:pointer; padding:0; text-decoration:underline; text-underline-offset:3px;}
+  .resetbtn:hover{color:var(--bad);}
+
+  /* ---------- sticky rail ---------- */
+  .rail{
+    position:sticky; top:0; z-index:20; background:var(--bg);
+    display:flex; gap:6px; overflow-x:auto; padding:12px 0; margin-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .rail::-webkit-scrollbar{height:0;}
+  .rail a{
+    flex:0 0 auto; font-family:var(--font-mono); font-size:11.5px; letter-spacing:.02em;
+    padding:6px 11px; border-radius:7px; border:1px solid var(--border);
+    background:var(--surface); color:var(--ink-faint); cursor:pointer; white-space:nowrap;
+    text-decoration:none; transition:color .15s, border-color .15s;
+  }
+  .rail a:hover{color:var(--ink-soft);}
+  .rail a.active{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
+  .rail a:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- section scaffolding ---------- */
+  section.part{padding-top:34px; scroll-margin-top:64px;}
+  .part-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+  .part-kicker{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);}
+  .part-time{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint); margin-left:auto;}
+  h2.part-title{font-family:var(--font-display); font-size:27px; font-weight:600; margin:0 0 8px; line-height:1.2; text-wrap:balance; width:100%;}
+  .part-lede{color:var(--ink-soft); font-size:15px; max-width:64ch; margin:0 0 18px;}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:14px;}
+  .card > *:first-child{margin-top:0;}
+  .card > *:last-child{margin-bottom:0;}
+
+  .mod-head{display:flex; gap:14px; align-items:flex-start; margin-bottom:14px;}
+  .mod-n{flex:0 0 auto; font-family:var(--font-mono); font-size:12px; font-weight:600; letter-spacing:.03em; color:var(--accent); background:var(--accent-bg); border-radius:6px; padding:5px 9px; line-height:1;}
+  .mod-title{font-family:var(--font-display); font-size:20px; font-weight:600; margin:0; line-height:1.25; text-wrap:balance;}
+  .mod-goal{color:var(--ink-soft); font-size:14px; margin:5px 0 0;}
+  .mod-dur{margin-left:auto; flex:0 0 auto; font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); white-space:nowrap; padding-top:6px;}
+
+  h4.lbl{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-faint); font-weight:500; margin:18px 0 8px;}
+  .card p{margin:0 0 10px; font-size:14.8px;}
+  .card ul, .card ol{margin:0 0 10px; padding-left:20px; font-size:14.8px;}
+  .card li{margin-bottom:5px;}
+  .card li::marker{color:var(--ink-faint);}
+  ol.steps{counter-reset:s; list-style:none; padding-left:0;}
+  ol.steps > li{counter-increment:s; position:relative; padding-left:30px; margin-bottom:9px;}
+  ol.steps > li::before{content:counter(s); position:absolute; left:0; top:1px; font-family:var(--font-mono); font-size:11px; font-weight:600; color:var(--accent); background:var(--accent-bg); width:20px; height:20px; border-radius:5px; display:flex; align-items:center; justify-content:center;}
+
+  code.tag{font-family:var(--font-mono); font-size:.9em; background:var(--surface-2); padding:1px 5px; border-radius:4px; white-space:nowrap;}
+
+  /* ---------- source reference chips ---------- */
+  .src{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 4px;}
+  .src span{font-family:var(--font-mono); font-size:11px; color:var(--ink-soft); background:var(--surface-2); border:1px solid var(--border); border-radius:6px; padding:4px 8px;}
+  .src span b{color:var(--ink-faint); font-weight:500;}
+
+  /* ---------- notes ---------- */
+  .note{border-radius:9px; padding:12px 15px; font-size:14.2px; margin:14px 0; border-left:3px solid;}
+  .note p{margin:0 0 7px; font-size:14.2px;}
+  .note p:last-child{margin-bottom:0;}
+  .note .nl{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:5px;}
+  .note.warn{background:var(--warn-bg); border-color:var(--warn);}
+  .note.warn .nl{color:var(--warn);}
+  .note.stop{background:var(--bad-bg); border-color:var(--bad);}
+  .note.stop .nl{color:var(--bad);}
+  .note.tip{background:var(--good-bg); border-color:var(--good);}
+  .note.tip .nl{color:var(--good);}
+
+  /* ---------- checkpoints ---------- */
+  .ckbox{background:var(--surface-2); border-radius:10px; padding:14px 16px; margin-top:18px;}
+  .ckbox h4.lbl{margin-top:0;}
+  .ckbox .cklist{list-style:none; margin:0; padding:0; display:grid; gap:7px;}
+  .ckbox label{display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-size:14.2px; line-height:1.45;}
+  .ckbox input[type=checkbox]{margin:3px 0 0; flex:0 0 auto; width:15px; height:15px; accent-color:var(--accent); cursor:pointer;}
+  .ckbox label:has(input:checked){color:var(--ink-faint); text-decoration:line-through; text-decoration-color:var(--ink-faint);}
+  .ckbox input:focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  /* ---------- quiz (самопроверка) ---------- */
+  .quiz{background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:14px 0;}
+  .quiz .q-text{font-weight:600; margin:0 0 10px; font-size:14.6px;}
+  .q-opts{display:grid; gap:7px; margin-bottom:2px; padding-left:0; list-style:none;}
+  .q-opts label{display:flex; gap:9px; align-items:flex-start; cursor:pointer; font-size:14.2px; line-height:1.4; margin-bottom:0;}
+  .q-opts input[type=radio]{margin:3px 0 0; accent-color:var(--accent); cursor:pointer; flex:0 0 auto;}
+  .q-fb{display:none; font-size:13.6px; border-radius:8px; padding:9px 12px; margin:10px 0 0;}
+  .quiz.answered .q-fb{display:block;}
+  .quiz.ok .q-fb{background:var(--good-bg); color:var(--good);}
+  .quiz.no .q-fb{background:var(--bad-bg); color:var(--bad);}
+  .quiz.answered .q-opts{pointer-events:none; opacity:.8;}
+
+  /* ---------- open / practical tasks (для куратора) ---------- */
+  .opentask{background:var(--surface-2); border-radius:10px; padding:14px 16px; margin:14px 0;}
+  .opentask .q-text{font-weight:600; margin:0 0 4px; font-size:14.6px;}
+  .opentask .q-hint{color:var(--ink-soft); font-size:13.2px; margin:0 0 9px;}
+  .opentask textarea{width:100%; min-height:78px; resize:vertical; font:inherit; font-size:14px; padding:9px 11px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink);}
+  .opentask-actions{display:flex; align-items:center; gap:12px; margin-top:9px; flex-wrap:wrap;}
+  .copybtn{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.04em; text-transform:uppercase; background:var(--accent); color:var(--accent-ink); border:none; border-radius:7px; padding:7px 13px; cursor:pointer;}
+  .copybtn:hover{opacity:.9;}
+  .copied-msg{font-size:12.5px; color:var(--good);}
+  .copied-msg[hidden]{display:none;}
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto; margin:14px 0; border:1px solid var(--border); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; font-size:13.6px; min-width:520px;}
+  th, td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--border); vertical-align:top;}
+  thead th{background:var(--surface-2); font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-faint); font-weight:500; white-space:nowrap;}
+  tbody tr:last-child td{border-bottom:none;}
+  td b{font-weight:600;}
+  .num{font-variant-numeric:tabular-nums;}
+
+  /* ---------- task cards ---------- */
+  .task{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 22px; margin-bottom:14px;}
+  .task-head{display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; margin-bottom:4px;}
+  .task-stage{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.07em; text-transform:uppercase; color:var(--ink-faint); width:100%;}
+  .task-title{font-family:var(--font-display); font-size:21px; font-weight:600; margin:0; line-height:1.2; flex:1 1 260px; text-wrap:balance;}
+  .diff{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; padding:4px 9px; border-radius:20px; white-space:nowrap; align-self:center;}
+  .diff.easy{background:var(--good-bg); color:var(--good);}
+  .diff.mid{background:var(--warn-bg); color:var(--warn);}
+  .diff.hard{background:var(--bad-bg); color:var(--bad);}
+  .io{display:grid; gap:10px; margin:14px 0; font-size:14px;}
+  @media (min-width:620px){ .io{grid-template-columns:1fr 1fr;} }
+  .io div{background:var(--surface-2); border-radius:9px; padding:11px 13px;}
+  .io .k{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); display:block; margin-bottom:4px;}
+
+  /* ---------- glossary ---------- */
+  .gloss{display:grid; gap:0;}
+  .gloss .g{display:grid; grid-template-columns:minmax(96px,150px) 1fr; gap:14px; padding:11px 0; border-bottom:1px solid var(--border); font-size:14.2px;}
+  .gloss .g:last-child{border-bottom:none;}
+  .gloss dt{font-family:var(--font-mono); font-size:12.5px; font-weight:600; color:var(--ink); margin:0;}
+  .gloss dd{margin:0; color:var(--ink-soft);}
+  @media (max-width:520px){ .gloss .g{grid-template-columns:1fr; gap:3px;} }
+
+  /* ---------- misc ---------- */
+  .footer{margin-top:44px; padding-top:18px; border-top:1px solid var(--border); font-size:13px; color:var(--ink-faint);}
+  .footer a{color:var(--accent);}
+  hr.sep{border:none; border-top:1px solid var(--border); margin:32px 0 0;}
+  .lead{font-size:16px; color:var(--ink-soft);}
+</style>
+
+<div class="shell">
+
+  <header class="masthead">
+    <div class="eyebrow">Онбординг · клиентский сервис Omni360</div>
+    <h1 class="title">Программа обучения нового сотрудника</h1>
+    <p class="sub">Четыре недели от «что такое DOOH» до самостоятельного запуска кампании в актуальном интерфейсе OmniDSP. Одиннадцать учебных модулей, семь рабочих задач, самопроверка и открытые задания для куратора.</p>
+    <div class="srclinks">
+      <a class="srclink" href="https://app.weeek.net/s/spravka-dsp-platformy-omni360-document-OTUyMzIxfGExYjZlMGY5LWU5NWUtNGNkMy04YmU3LTNjMTQ1YzE3N2M5ZQ==" target="_blank" rel="noopener">
+        <span class="m">Справка · рынок и продукт</span> Справка DSP-платформы Omni360 →
+      </a>
+      <a class="srclink" href="https://testdsp.omniboard360.io/assets/docs/user-guide/?markup=visible&features=creatives%2Canalytics%2Csummary%2Cdirectories%2Csettings-agencies%2Csettings-customers%2Csettings-brands%2Csettings-users&lang=ru" target="_blank" rel="noopener">
+        <span class="m">Справка · интерфейс</span> Инструкция пользователя OmniDSP →
+      </a>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="progress-top">
+      <h2>Прогресс</h2>
+      <span class="progress-num" id="pnum">0 из 0 отметок</span>
+      <button class="resetbtn" id="reset" type="button">Сбросить</button>
+    </div>
+    <div class="cells" id="cells"></div>
+    <div class="cell-legend">
+      <span><i class="swatch"></i> блок не закрыт</span>
+      <span><i class="swatch on"></i> блок закрыт</span>
+      <span>18 блоков: 11 модулей + 7 задач</span>
+    </div>
+  </div>
+
+  <nav class="rail" id="rail">
+    <a href="#start">Как устроено</a>
+    <a href="#w1">Неделя 1 · Продукт</a>
+    <a href="#w2">Неделя 2 · Подготовка</a>
+    <a href="#w3">Неделя 3 · Креативы</a>
+    <a href="#w4">Неделя 4 · Запуск</a>
+    <a href="#tasks">Рабочие задачи</a>
+    <a href="#gloss">Словарь</a>
+    <a href="#exam">Аттестация</a>
+  </nav>
+
+  <!-- ================= START ================= -->
+  <section class="part" id="start">
+    <div class="part-head">
+      <span class="part-kicker">Перед стартом</span>
+      <h2 class="part-title">Как устроена программа</h2>
+    </div>
+    <div class="card">
+      <p class="lead">Программа собрана из двух Справок Omni360 — по продукту/рынку и по актуальному интерфейсу OmniDSP — и разложена по неделям так, как задачи приходят в реальной работе. Она не пересказывает Справки: предполагается, что вы их уже прочитали и открывали интерфейс. Здесь — контекст, на что обращать внимание, где терять деньги и время, и задания на закрепление.</p>
+
+      <h4 class="lbl">Как читать</h4>
+      <ul>
+        <li><b>Модуль</b> — теория плюс блок самопроверки (короткие вопросы с мгновенным ответом) и чек-точка того, что вы должны уметь объяснить или показать в кабинете.</li>
+        <li><b>Рабочая задача</b> — то, что вы делаете руками каждую неделю: порядок, чек-лист, типичные ошибки.</li>
+        <li><b>Задание для куратора</b> — открытый вопрос или практика в кабинете. Ответ пишете в поле и отправляете руководителю прямо отсюда — он увидит его в своём дашборде и оставит обратную связь тут же, под вопросом.</li>
+        <li><b>Отметки и ответы</b> сохраняются за вами — можно закрыть страницу и вернуться с того же места, в том числе с другого устройства.</li>
+      </ul>
+
+      <h4 class="lbl">Ритм недели</h4>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Неделя</th><th>Фокус</th><th>Чем заканчивается</th></tr></thead>
+          <tbody>
+            <tr><td><b>1</b></td><td>Рынок, форматы, кабинет, модели закупки</td><td>Разбираете чужие кампании и объясняете, почему они так собраны</td></tr>
+            <tr><td><b>2</b></td><td>Справочники, ТТ, медиапланирование</td><td>Собираете свой первый медиаплан на учебном брифе</td></tr>
+            <tr><td><b>3</b></td><td>Креативы, модерация, работа с операторами</td><td>Проводите креатив через модерацию до статуса «Согласован»</td></tr>
+            <tr><td><b>4</b></td><td>Запуск, статистика, ПГ/АГ</td><td>Запускаете кампанию под наставником и сдаёте аттестацию</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note tip">
+        <span class="nl">Наставнику</span>
+        <p>Первые три недели новичок работает только с тестовым рекламодателем и не нажимает «Запустить», «Отменить» и «Отправить на модерацию» без подтверждения. В неделю 4 — запуск под наблюдением.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= WEEK 1 ================= -->
+  <section class="part" id="w1">
+    <div class="part-head">
+      <span class="part-kicker">Неделя 1</span>
+      <span class="part-time">≈ 16 ч</span>
+      <h2 class="part-title">Рынок, продукт и кабинет</h2>
+    </div>
+    <p class="part-lede">Цель недели — говорить с клиентом и оператором на одном языке и свободно ориентироваться в кабинете. Без этого медиаплан превращается в набор строк в Excel, а не в аргумент.</p>
+
+    <!-- M1 -->
+    <article class="card" data-block="m1">
+      <div class="mod-head">
+        <span class="mod-n">М1</span>
+        <div>
+          <h3 class="mod-title">Что такое DOOH и чем занимается Omni360</h3>
+          <p class="mod-goal">Понимать, что мы продаём и кому, и не путать outdoor с indoor.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Чем занимается Omni360</span><span><b>Справка</b> · Виды и форматы наружной рекламы</span></div>
+
+      <h4 class="lbl">Что нужно знать</h4>
+      <ul>
+        <li><b>Omni360</b> — технологический партнёр рекламных агентств по закупке цифровой наружной и indoor-рекламы в РФ. Даёт доступ к DSP OmniDSP и ведёт клиентский сервис на всех этапах.</li>
+        <li><b>DSP</b> — посредник между рекламодателем и SSP при покупке рекламных мест. <b>SSP</b> — платформа оператора, которая передаёт инвентарь в аукцион. <b>RTB</b> — аукцион в реальном времени за конкретный показ.</li>
+        <li>Ключевой аргумент для клиента: уникальные таргетинги, независимость от селлеров, измеримость и <b>отсутствие требований ОРД</b> — DOOH не нужно маркировать токенами.</li>
+      </ul>
+
+      <h4 class="lbl">Форматы: outdoor, indoor и mobile</h4>
+      <p>«Код» — то, что вы реально встретите в системе: у outdoor-форматов это просто аббревиатура русского названия (Сити-Формат → <code class="tag">CF</code>), а у indoor и mobile — служебное имя категории в справочнике экранов, без явной связи с русским названием. Их не нужно расшифровывать логически, только запомнить, что за чем стоит.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Тип</th><th>Код</th><th>Формат</th><th>Кого ловит</th></tr></thead>
+          <tbody>
+            <tr><td>Outdoor</td><td><code class="tag">CF</code></td><td>Сити-формат</td><td>Пешеходы, на уровне глаз. Самый дешёвый формат</td></tr>
+            <tr><td>Outdoor</td><td><code class="tag">CB</code></td><td>Ситиборд</td><td>Пешеходы + узкие автодороги</td></tr>
+            <tr><td>Outdoor</td><td><code class="tag">BB</code></td><td>Билборд</td><td>Перекрёстки и трассы. Высокая конкуренция за места</td></tr>
+            <tr><td>Outdoor</td><td><code class="tag">SS</code></td><td>Суперсайт</td><td>Видно издалека и ночью. Дорого, мало мест в центре</td></tr>
+            <tr><td>Outdoor</td><td><code class="tag">MF</code></td><td>Медиафасад</td><td>По зданию. Имиджевый максимум, самый дорогой формат</td></tr>
+            <tr><td>Indoor</td><td><code class="tag">OTHER</code></td><td>Экраны в помещениях</td><td>ТРК / ТЦ / БЦ / магазины, аэропорты и транспорт — всё, что не подошло под более узкую категорию ниже</td></tr>
+            <tr><td>Indoor</td><td><code class="tag">CITY_FORMAT_RD</code> / <code class="tag">CITY_FORMAT_RC</code></td><td>Вокзалы и МЦК</td><td>Экраны на вокзалах и станциях Московского центрального кольца</td></tr>
+            <tr><td>Indoor</td><td><code class="tag">CITY_FORMAT_WD</code></td><td>Павильоны метро</td><td>Экраны у входов в метро</td></tr>
+            <tr><td>Indoor</td><td><code class="tag">PVZ_SCREEN</code></td><td>Пункты выдачи</td><td>Экраны в ПВЗ Wildberries</td></tr>
+            <tr><td>Mobile</td><td><code class="tag">MOBILE</code></td><td>Транспорт</td><td>Экраны в автобусах с привязкой к маршруту</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="nl">Запомнить сразу</span>
+        <p>Indoor-инвентарь и часть outdoor <b>не передают OTS</b>. Это значит: по таким экранам нельзя запускаться по типу ставки «по OTS», на них не работают аудиторные таргетинги, и в отчётности OTS будет пустой. Если клиент просит OTS-отчётность — такой инвентарь из плана уходит.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">1. Клиент просит запустить кампанию по ставке «по OTS» и получить полную OTS-отчётность. В подобранной адресной программе половина экранов — indoor. Что делать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m1_1"> Оставить всё как есть — indoor тоже покажет OTS, просто с задержкой</label></li>
+          <li><label><input type="radio" name="q_m1_1" data-correct="true"> Убрать indoor-экраны из АП или предупредить клиента, что по ним OTS не будет</label></li>
+          <li><label><input type="radio" name="q_m1_1"> Переключить тип ставки на «по выходам» без разговора с клиентом</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно: indoor не передаёт OTS в принципе, это не вопрос задержки." data-no="Неверно: indoor не передаёт OTS вообще, а не с задержкой — вопрос конструктивный, а не технический."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m1" data-label="Модуль М1 · DOOH и Omni360">
+        <p class="q-text">Объясните в 2–3 предложениях клиенту, зачем DOOH нужен вместе с интернет-рекламой, и почему в DOOH не требуется маркировка ОРД.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m1a"><span>Объясняю разницу outdoor / indoor на примере двух похожих экранов — одного на фасаде ТЦ, другого в его фойе</span></label></li>
+          <li><label><input type="checkbox" data-k="m1b"><span>Называю пять outdoor-форматов и говорю, кого каждый ловит</span></label></li>
+          <li><label><input type="checkbox" data-k="m1c"><span>По памяти говорю, что стоит за каждым indoor-кодом (OTHER, CITY_FORMAT_RD/RC/WD, PVZ_SCREEN, MOBILE)</span></label></li>
+          <li><label><input type="checkbox" data-k="m1d"><span>Знаю, почему в DOOH не нужен ОРД, и что такое ОРД в принципе</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M2 -->
+    <article class="card" data-block="m2">
+      <div class="mod-head">
+        <span class="mod-n">М2</span>
+        <div>
+          <h3 class="mod-title">Кабинет OmniDSP: навигация, роли, статусы</h3>
+          <p class="mod-goal">Свободно ориентироваться в интерфейсе и понимать, что видит клиент со своей ролью.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Начало работы</span><span><b>Справка</b> · Список кампаний</span></div>
+
+      <h4 class="lbl">Навигация</h4>
+      <ul>
+        <li>Слева — пять разделов: <b>Кампании</b> (список и создание РК), <b>Креативы</b>, <b>Аналитика</b>, <b>Сводка</b> (мониторинг и агрегированные показатели по РК), <b>Справочники</b> (рекламодатели, бренды, пользователи — доступны по правам роли).</li>
+        <li>Внизу панели — переключатель языка/темы, «Гайд по системе» и «Помощник Omni360». Помощник отвечает на разовые вопросы, гайд — для последовательного изучения.</li>
+        <li>Если нужного справочника или кнопки нет — это не баг, а ограничение роли: обратитесь к администратору агентства.</li>
+      </ul>
+
+      <h4 class="lbl">Статусы кампаний</h4>
+      <p>Статусы сгруппированы по смыслу — точное состояние всегда проверяйте в колонке «Статус» внутри кампании, а не только по группе фильтра.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Группа</th><th>Примеры статусов</th><th>Что означает</th></tr></thead>
+          <tbody>
+            <tr><td><b>Активные</b></td><td>Активирована, Активна, Забронирована, Зарезервирована</td><td>Кампания работает или ожидает начала размещения</td></tr>
+            <tr><td><b>В обработке</b></td><td>На модерации, На таргетинге, На доработке</td><td>Система или оператор обрабатывает кампанию</td></tr>
+            <tr><td><b>Новые</b></td><td>Новая</td><td>Создана, ещё не запущена — единственная группа, из которой можно удалить</td></tr>
+            <tr><td><b>Завершённые</b></td><td>Завершена, Бюджет исчерпан, OTS исчерпан, Без инвентаря</td><td>Размещение закончилось или не может продолжаться</td></tr>
+            <tr><td><b>Остановлены</b></td><td>Остановлена, Отменена, Отклонена, Удалена</td><td>Кампания не участвует в размещении — повторный запуск зависит от точного статуса</td></tr>
+            <tr><td><b>Ошибки</b></td><td>Ошибка, Ошибка подтверждения, Ошибка отмены</td><td>Операция не завершилась — откройте кампанию и проверьте сообщение</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note stop">
+        <span class="nl">Необратимо</span>
+        <p>«Отменить» останавливает кампанию навсегда, повторный запуск невозможен. Для паузы и правок — «Остановить». Перепутать эти две кнопки — самая дорогая ошибка первой недели.</p>
+      </div>
+
+      <h4 class="lbl">Действия со строкой и НДС</h4>
+      <ul>
+        <li>Меню действий зависит от статуса: у новой кампании — «Открыть», «Запустить», «Дублировать», «Удалить», «Экспорт эфирной справки», «Статистика (Excel)».</li>
+        <li>«Дублировать» создаёт черновик на основе текущей кампании вместе с бюджетом и адресной программой — перед запуском копии обязательно обновите даты, бюджет и актуальность экранов.</li>
+        <li>Колонка бюджета по умолчанию — бюджет клиента без НДС; кнопка ⇄ переключает на бюджет баера. НДС в системе — <b>22%</b>, начисляется отдельно поверх бюджета/ставок без НДС, не смешивайте эти суммы вручную.</li>
+      </ul>
+
+      <div class="quiz">
+        <p class="q-text">2. Вам нужно посмотреть агрегированные показатели сразу по нескольким РК и проверить права нового пользователя. В каких разделах навигации это делается?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m2_1" data-correct="true"> Агрегированные показатели — в «Сводке», права пользователя — в «Справочниках»</label></li>
+          <li><label><input type="radio" name="q_m2_1"> И то и другое — внутри самой кампании в «Кампаниях»</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно: «Сводка» — это мониторинг и агрегаты по РК, «Справочники» — рекламодатели, бренды и пользователи с их правами." data-no="Неверно: агрегаты по нескольким РК считает «Сводка», а права пользователей выдаются в «Справочниках», не внутри отдельной кампании."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m2" data-label="Модуль М2 · Кабинет OmniDSP">
+        <p class="q-text">По брифу клиента, которому нужен доступ «только смотреть статистику, без бюджетов и создания кампаний», опишите, какую роль вы бы выдали и почему. Проверьте предположение на тестовом пользователе и опишите, что он реально увидел.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m2a"><span>Показываю все пять пунктов левого меню (Кампании, Креативы, Аналитика, Сводка, Справочники) и говорю, зачем каждый</span></label></li>
+          <li><label><input type="checkbox" data-k="m2b"><span>Открыл «Справочники» и нашёл в них рекламодателей, бренды и пользователей</span></label></li>
+          <li><label><input type="checkbox" data-k="m2c"><span>Называю все шесть групп статусов и что в них входит</span></label></li>
+          <li><label><input type="checkbox" data-k="m2d"><span>Знаю разницу между «Остановить» и «Отменить»</span></label></li>
+          <li><label><input type="checkbox" data-k="m2e"><span>Понимаю, что показывает переключатель ⇄ и как считается НДС 22%</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M3 -->
+    <article class="card" data-block="m3">
+      <div class="mod-head">
+        <span class="mod-n">М3</span>
+        <div>
+          <h3 class="mod-title">Три модели закупки: RTB, ПГ, АГ</h3>
+          <p class="mod-goal">Подбирать модель под задачу клиента, а не под привычку.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Типы кампаний</span><span><b>Справка</b> · ПГ и АГ: гарантированные размещения</span></div>
+
+      <div class="tw">
+        <table>
+          <thead><tr><th></th><th>RTB (аукцион)</th><th>ПГ (программатический гарантид)</th><th>АГ (автогарантия)</th></tr></thead>
+          <tbody>
+            <tr><td><b>Стоимость</b></td><td>Динамическая, зависит от сезона и спроса</td><td>Фиксированная стоимость размещения</td><td>Фиксированный прайс за набор экранов, возможна скидка или своя цена</td></tr>
+            <tr><td><b>Тип ставки</b></td><td>По выходам или по OTS</td><td>По выходам</td><td>Без аукционной ставки — оплата за размещение целиком</td></tr>
+            <tr><td><b>Как создаётся</b></td><td>Общая форма создания РК</td><td>Та же форма создания РК, тип «Прог. гарантид»</td><td>Отдельная форма: Основные параметры → Экраны → Стоимость → Итоги</td></tr>
+            <tr><td><b>Гарантия</b></td><td>Нет: возможны проигрыши в аукционе</td><td>Фиксированная стоимость и объём</td><td>Прямая сделка с площадкой на конкретные экраны и даты</td></tr>
+            <tr><td><b>Правки после запуска</b></td><td><b>Да</b></td><td>Зависят от статуса и прав — обычно ограничены</td><td>Условия фиксируются на этапе отправки на модерацию</td></tr>
+            <tr><td><b>Real-time таргетинг</b></td><td>Да</td><td>Нет</td><td>Нет</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Аукционный тип доступен клиенту базово. ПГ и АГ подключаются по правам аккаунта — если карточки типа нет в форме создания РК, дело в доступе, а не в интерфейсе.</p>
+
+      <div class="note warn">
+        <span class="nl">Правило выбора</span>
+        <p>Нужна гибкость, тесты и правки на ходу — RTB. Нужен гарантированный объём с фиксированной стоимостью и клиент готов зафиксировать условия — ПГ. Нужна прямая сделка на конкретные экраны и даты без аукциона — АГ.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">3. Клиент хочет тестировать разные креативы в первую неделю и оперативно менять ставки. Какая модель подходит?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m3_1" data-correct="true"> RTB — только там доступны правки на ходу</label></li>
+          <li><label><input type="radio" name="q_m3_1"> АГ — цена фиксируется один раз при отправке на модерацию</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: в АГ условия фиксируются при отправке на модерацию, тестировать на ходу там нельзя."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m3" data-label="Модуль М3 · Модели закупки">
+        <p class="q-text">По трём учебным брифам (получите у наставника) выберите модель закупки для каждого и обоснуйте выбор в 1–2 предложениях на бриф.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m3a"><span>1. Воспроизвожу разницу RTB / ПГ / АГ по памяти в трёх строках: гарантия, правки, таргетинг</span></label></li>
+          <li><label><input type="checkbox" data-k="m3c"><span>2. Знаю, где что создаётся: RTB и ПГ — в общей форме создания РК, АГ — в отдельной</span></label></li>
+          <li><label><input type="checkbox" data-k="m3b"><span>3. Применил на практике: по трём учебным брифам выбрал модель для каждого и защитил выбор перед наставником</span></label></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= WEEK 2 ================= -->
+  <section class="part" id="w2">
+    <div class="part-head">
+      <span class="part-kicker">Неделя 2</span>
+      <span class="part-time">≈ 18 ч</span>
+      <h2 class="part-title">Подготовка размещения</h2>
+    </div>
+    <p class="part-lede">Всё, что происходит до того, как появится хоть один макет — по порядку: сначала заводим клиента в системе, затем вытаскиваем технические требования и в конце собираем медиаплан.</p>
+
+    <!-- M4 -->
+    <article class="card" data-block="m4">
+      <div class="mod-head">
+        <span class="mod-n">М4</span>
+        <div>
+          <h3 class="mod-title">Справочники: рекламодатель, бренд, пользователи</h3>
+          <p class="mod-goal">Заполнять карточки рекламодателя, бренда и пользователя с первого раза правильными полями.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Настройки и справочники</span></div>
+
+      <h4 class="lbl">Рекламодатель</h4>
+      <ul>
+        <li>Справочники → Рекламодатели → «Создать рекламодателя», выбрать агентство и заполнить обязательные поля.</li>
+        <li><b>Надбавка, %</b> — определяет, какие цены видит клиент. Поле обязательное и по умолчанию уже стоит 0% — если надбавки нет, просто оставляем как есть, обнулять вручную не нужно. Отрицательное значение для скидки недоступно.</li>
+        <li><b>Месячный лимит</b> — сумма на все кампании рекламодателя за календарный месяц; уже созданные кампании уменьшают остаток. Поле тоже по умолчанию 0, и <b>это значение не означает «нет лимита вообще»</b> — оно означает «личного лимита нет, действует лимит агентства». Личный лимит не может превышать лимит агентства.</li>
+        <li>Реквизиты заполняйте корректно, если планируете работать со счетами — не подставляйте фиктивные значения «для галочки».</li>
+      </ul>
+
+      <h4 class="lbl">Бренд</h4>
+      <p>Бренд всегда привязан к рекламодателю и разграничивает его кампании, позволяя выставлять по ним отдельные счета. Создаётся в справочнике «Бренды» или кнопкой «+ Новый бренд» прямо в форме создания РК после выбора рекламодателя.</p>
+
+      <div class="note warn">
+        <span class="nl">Ловушка привязки</span>
+        <p>Если в записи креатива указан бренд, эта запись привяжется только к кампаниям этого бренда — то же с рекламодателем. Для универсальных креативов эти поля лучше оставлять пустыми.</p>
+      </div>
+
+      <h4 class="lbl">Пользователи</h4>
+      <p>Справочники → Пользователи → добавление учётной записи: почта — логин, пароль задаётся вручную и сохраняется, чтобы передать клиенту. Клиенту передаём следующие данные: ссылку на вход, логин, пароль, инструкцию по платформе.</p>
+
+      <div class="quiz">
+        <p class="q-text">4. У рекламодателя месячный лимит указан как 0. Что это значит?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m4_1"> Рекламодатель не может создавать кампании вообще</label></li>
+          <li><label><input type="radio" name="q_m4_1" data-correct="true"> Личного лимита нет — действует общий лимит агентства</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: 0 = нет персонального ограничения, но лимит агентства всё равно действует."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m4" data-label="Модуль М4 · Справочники">
+        <p class="q-text">Заведите тестового рекламодателя с надбавкой и месячным лимитом, создайте два бренда, выдайте доступ тестовому пользователю. Опишите, что пользователь увидел под своей ролью.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m4a"><span>Завёл тестового рекламодателя с надбавкой и месячным лимитом</span></label></li>
+          <li><label><input type="checkbox" data-k="m4b"><span>Создал два бренда и объяснил, зачем их разделять</span></label></li>
+          <li><label><input type="checkbox" data-k="m4c"><span>Выдал доступ тестовому пользователю и проверил, что он видит со своей ролью</span></label></li>
+          <li><label><input type="checkbox" data-k="m4d"><span>Понимаю разницу между надбавкой 0% и лимитом 0</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M5 -->
+    <article class="card" data-block="m5">
+      <div class="mod-head">
+        <span class="mod-n">М5</span>
+        <div>
+          <h3 class="mod-title">Технические требования и длительности слотов</h3>
+          <p class="mod-goal">Собрать корректное ТЗ на макеты с первого раза.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Экраны: карта, выбор, ставки и график</span></div>
+      <p>Модуль напрямую готовит к <b>задаче 1 «Подготовка ТТ»</b>.</p>
+
+      <h4 class="lbl">Где смотреть</h4>
+      <ul>
+        <li>ТТ привязаны к экранам и открываются в таблице выбора экранов: рядом с миниатюрой фото есть кнопка технических требований конкретной конструкции.</li>
+        <li>Экспорт «PDF / Excel» над таблицей выгружает технические требования по текущему выбранному набору экранов — выгружайте после того, как адресная программа собрана, а не до.</li>
+        <li>Серая или неактивная кнопка ТТ означает, что оператор не передал актуальные требования в систему — так бывает не у всех операторов. Не подставляйте требования «на глаз»: проверьте внутренний инструмент «Сбор технических требований» (см. врезку «Инструменты» ниже) — он тянет ссылку на ТТ по адресной программе; если ссылки нет и там, эскалируйте тому, кто ведёт отношения с этим оператором.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Подводные камни</span>
+        <ul>
+          <li>Не у всех операторов ТТ вообще загружены в систему — это нормальная ситуация, а не баг.</li>
+          <li>У оператора РИМ отдельно: ориентируйтесь на разрешение, которое показывает система, а не на разрешения из присланного оператором PDF — они могут не совпадать.</li>
+          <li>Общее правило для всех операторов: разрешение всегда берите из системы, а не из ТТ-документа. Система физически не даст загрузить креатив с разрешением, под которое у экрана нет соответствующего слота, — так что система в этом смысле надёжнее любого PDF.</li>
+        </ul>
+      </div>
+
+      <div class="note tip">
+        <span class="nl">Инструмент</span>
+        <p>«Сбор технических требований» в <a href="https://bucolic-cascaron-cfe55e.netlify.app/" target="_blank" rel="noopener">панели внутренних инструментов отдела</a>: загружаете адресную программу — инструмент сам определяет длительность ролика по связке «оператор + формат» и подтягивает ссылку на ТТ с Яндекс.Диска, убирая дубли. Экономит именно ту сверку, которая в этом модуле делается вручную.</p>
+      </div>
+
+      <h4 class="lbl">Длительность слота — не то же, что в PDF оператора</h4>
+      <p>Хронометраж берите из системы (колонка длительности в таблице выбора экранов), а не из текстового ТТ оператора: тексты операторов часто пишутся сразу под барабан и под программатик и содержат длительности, которых у вас в размещении нет. При импорте экранов по GID система запрашивает подтверждение нужной длительности отдельным диалогом, если у экрана их несколько — недоступная длительность молча не подставляется.</p>
+
+      <div class="note warn">
+        <span class="nl">Запомнить</span>
+        <p>У одного экрана может быть несколько доступных слотов разной длительности. Чем длиннее слот — тем выше минимальная ставка. Уточняйте у оператора через клиентский сервис Omni360, если длительность или наличие эфира (медиафасады) не видны в системе.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">5. В PDF-файле от оператора указана длительность ролика 15 секунд, а в таблице выбора экранов у нужного слота — 10 секунд. Какую длительность закладывать в ТЗ дизайнеру?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m5_1"> 15 секунд — это официальный документ оператора</label></li>
+          <li><label><input type="radio" name="q_m5_1" data-correct="true"> 10 секунд — хронометраж берём из системы, а не из общего PDF оператора</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: PDF оператора часто написан сразу под несколько закупочных моделей и может содержать лишние варианты длительности."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m5" data-label="Модуль М5 · ТТ и длительности слотов">
+        <p class="q-text">Найдите в учебной адресной программе экран с несколькими доступными длительностями слота и опишите, как вы определите нужную для конкретного размещения.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m5a"><span>Выгрузил техтребования по учебной АП через PDF/Excel и открыл ТТ отдельного экрана</span></label></li>
+          <li><label><input type="checkbox" data-k="m5b"><span>Нашёл в АП экраны с несколькими доступными длительностями слота</span></label></li>
+          <li><label><input type="checkbox" data-k="m5c"><span>Объясняю, почему длительность из PDF оператора может не совпадать с длительностью слота в системе</span></label></li>
+          <li><label><input type="checkbox" data-k="m5d"><span>Знаю, что делать при неактивной кнопке ТТ</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M6 -->
+    <article class="card" data-block="m6">
+      <div class="mod-head">
+        <span class="mod-n">М6</span>
+        <div>
+          <h3 class="mod-title">Медиапланирование: подбор инвентаря, ставки, прогноз</h3>
+          <p class="mod-goal">Из брифа получить адресную программу со ставками и защищаемым прогнозом.</p>
+        </div>
+        <span class="mod-dur">10 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Экраны: карта, выбор, ставки и график</span></div>
+      <p>Модуль готовит к <b>задаче 2 «Подготовка медиапланов»</b>.</p>
+
+      <h4 class="lbl">Прежде чем подбирать экраны</h4>
+      <p>Город, даты и бюджет кампании должны быть заполнены заранее — без бюджета автоподбор недоступен, а смена города или периода делает уже выбранные экраны неактуальными.</p>
+
+      <h4 class="lbl">Инструменты подбора — выбирайте по задаче, а не по привычке</h4>
+      <ul>
+        <li><b>Вручную по карте и таблице</b> — фильтры и точечный выбор, когда нужен контроль над каждым экраном.</li>
+        <li><b>Аудитории</b> — готовые портреты (домохозяйки, автомобилисты, студенты и т.п.), быстрый подбор по аффинитивности без ручной работы с DMP.</li>
+        <li><b>Pre-campaign таргетинг</b> — точнее «Аудиторий»: свои DMP-сегменты (сейчас источник один — VK) и порог скора, когда портрет клиента нестандартный. Система считает каждому экрану «скор» — насколько по данным VK вокруг него сконцентрирована выбранная аудитория; ползунок «Мин. скор, % от макс.» задаёт порог отсечения от самого высокого скора среди подходящих экранов: чем выше порог, тем уже и точнее адресная программа, но тем меньше в ней экранов.</li>
+        <li><b>Поиск мест</b> — вкладка «Поиск 2ГИС» ищет сети и категории <b>только в той области карты, что сейчас видна на экране</b> — сначала выберите город или подведите карту к нужному месту, иначе поиск ничего не найдёт. Вкладка «Адрес/координаты» — свой список текстом, по одному адресу или координатам «широта, долгота» на строку, форматы можно смешивать. Радиус — от 50 до 10 000 м с шагом 50 м. Если нужен более широкий охват (город целиком, до 40 км) или заведомо полный список объектов сети — быстрее собрать его во внешнем инструменте «Подбор адресов через 2ГИС» из <a href="https://bucolic-cascaron-cfe55e.netlify.app/" target="_blank" rel="noopener">панели инструментов отдела</a> и затем импортировать результат по GID.</li>
+        <li><b>Многоугольник / ломаная</b> — область или маршрут произвольной формы.</li>
+        <li><b>Автоподбор по бюджету</b> — быстрый набор в рамках бюджета; «Параметры автоподбора» уточняют строгость формата, географию (центр/периферия/весь город), направление потока и равномерность по районам.</li>
+        <li><b>Импорт по GID</b> — вручную или файлом XLS/XLSX, если адресная программа уже готова у клиента или оператора.</li>
+      </ul>
+      <p>Способы комбинируются: например, автоподбор → ручная правка на карте → фильтр «Только с ОТС», если клиенту нужна OTS-отчётность.</p>
+
+      <h4 class="lbl">Ставки</h4>
+      <ul>
+        <li><b>Минимальная</b> — порог оператора, ниже которого запуск заблокирован. <b>Рекомендованная</b> — по историческим успешным выходам. <b>Ставка</b> — то, с чем вы идёте в аукцион.</li>
+        <li>Можно применить ко всем сохранённым экранам, к группе или к отдельной строке/слоту.</li>
+      </ul>
+      <div class="note warn">
+        <span class="nl">Ловушка минимальной ставки</span>
+        <p>Ставка, равная минимальной, почти не выигрывает аукцион — минимум может ещё и плавать вместе с условиями аукциона. Отдельно у оператора <b>Russ Outdoor</b> минимальная ставка не фиксирована, а динамическая: она зависит от того, сколько человек находится перед экраном в конкретный момент, — поэтому у Russ минимум может заметно отличаться в разное время суток, и ставку «с запасом» стоит проверять чаще, чем у операторов с фиксированным порогом. Дробную часть указывайте <b>через точку</b>: <code class="tag">1.5</code>, не <code class="tag">1,5</code>.</p>
+      </div>
+
+      <h4 class="lbl">Бюджет, НДС и равномерность</h4>
+      <ul>
+        <li>Все ставки, минимальные пороги и лимиты — <b>без НДС</b>. НДС 22% считается системой отдельно поверх бюджета клиента, не прибавляйте его к ставке вручную.</li>
+        <li>Дневной и часовой лимиты не увеличивают общий бюджет, а лишь ограничивают темп открутки в течение периода.</li>
+        <li>Общий/дневной/часовой максимумы показов или OTS плюс интервал между показами — то, что реально даёт ровную открутку. «Оптимальная модель» переносит недобранный остаток на следующий интервал.</li>
+      </ul>
+
+      <div class="note stop">
+        <span class="nl">Как говорить о прогнозе с клиентом</span>
+        <p>Прогноз — приблизительная оценка, не гарантия и не оферта. Фактический результат зависит от конкуренции в аукционе, доступности экранов и графика. В RTB гарантии выхода нет по определению модели.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">6. Бюджет клиента без НДС — 200 000 ₽. Сколько составит итоговая сумма с НДС 22%?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m6_1"> 222 000 ₽</label></li>
+          <li><label><input type="radio" name="q_m6_1" data-correct="true"> 244 000 ₽</label></li>
+          <li><label><input type="radio" name="q_m6_1"> 200 000 ₽, НДС уже включён в ставки</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно: 200 000 + 22% = 244 000 ₽." data-no="Неверно: 200 000 × 1.22 = 244 000 ₽, а ставки и бюджет клиента указываются без НДС."></p>
+      </div>
+
+      <h4 class="lbl">Самостоятельная сборка МП: инструмент «Планировщик»</h4>
+      <p>Всё описанное выше — это подбор экранов внутри уже созданной кампании. Но черновой медиаплан для клиента часто нужно собрать быстрее и до того, как заводить кампанию в кабинете — для этого есть отдельный веб-инструмент <a href="https://omni360.adtech.systems/page103658706.html" target="_blank" rel="noopener">Планировщик</a> (вход — тот же логин и пароль, что в DSP). Бриф собирается в пять шагов: <b>География</b> (города/регионы или готовый список GID) → <b>Период</b> → <b>Экраны</b> → <b>Адреска</b> → <b>Цели</b>. Планировщик отдаёт готовый черновой план с прогнозом ещё до того, как вы создали саму кампанию — его удобно использовать на созвоне с клиентом или для быстрой прикидки нескольких вариантов размещения, а потом уже переносить финальный вариант в кампанию.</p>
+
+      <div class="opentask" data-k="ot_m6" data-label="Модуль М6 · Медиапланирование">
+        <p class="q-text">Соберите учебную адресную программу двумя разными инструментами (например, «Поиск мест» и «Автоподбор по бюджету»), сравните результат и опишите, чем они отличались. Отдельно соберите тот же бриф в Планировщике и сравните черновой план с тем, что получилось в кампании.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m6a"><span>Собрал АП минимум тремя разными инструментами подбора</span></label></li>
+          <li><label><input type="checkbox" data-k="m6b"><span>Подобрал экраны через «Поиск мест» с радиусом и через «Аудитории»</span></label></li>
+          <li><label><input type="checkbox" data-k="m6c"><span>Проставил ставки массово и точечно, поднял минимальную на процент</span></label></li>
+          <li><label><input type="checkbox" data-k="m6d"><span>Настроил график вещания на прайм-тайм и увидел, как изменился прогноз</span></label></li>
+          <li><label><input type="checkbox" data-k="m6e"><span>Могу посчитать сумму бюджета клиента с НДС 22% в уме</span></label></li>
+          <li><label><input type="checkbox" data-k="m6f"><span>Собрал медиаплан по учебному брифу и защитил его перед наставником</span></label></li>
+          <li><label><input type="checkbox" data-k="m6g"><span>Собрал тот же бриф в Планировщике за пять шагов и сравнил результат с кампанией</span></label></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= WEEK 3 ================= -->
+  <section class="part" id="w3">
+    <div class="part-head">
+      <span class="part-kicker">Неделя 3</span>
+      <span class="part-time">≈ 16 ч</span>
+      <h2 class="part-title">Креативы и операторы</h2>
+    </div>
+    <p class="part-lede">Самая частая причина сорванного старта — креатив, не прошедший модерацию вовремя. Эта неделя про то, как этого не допустить.</p>
+
+    <!-- M7 -->
+    <article class="card" data-block="m7">
+      <div class="mod-head">
+        <span class="mod-n">М7</span>
+        <div>
+          <h3 class="mod-title">Креативы: запись, файлы, подрядчики, модерация</h3>
+          <p class="mod-goal">Провести креатив от загрузки до статуса «Согласован» у всех операторов АП.</p>
+        </div>
+        <span class="mod-dur">10 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Креативы</span></div>
+      <p>Модуль готовит к <b>задаче 4 «Загрузка и согласование креативов»</b>.</p>
+
+      <h4 class="lbl">Главная абстракция: запись креатива</h4>
+      <p><b>Запись</b> — одна карточка, внутри которой лежит один или несколько файлов для разных форматов и операторов. К кампании привязывается запись целиком, система сама подбирает подходящий и одобренный файл под конкретный экран.</p>
+      <ul>
+        <li><b>Тип и длительность задаёт первый загруженный файл записи.</b> Если позже добавить файл другого типа или длительности, кампании всё равно будут использовать значения первого файла — для другого хронометража или типа заводите отдельную запись.</li>
+        <li>Записи живут отдельно от кампаний — можно завести креатив до появления РК.</li>
+        <li>Указывать рекламодателя и бренд в записи не обязательно. Но если указали — запись потом можно привязать только к кампаниям с тем же рекламодателем/брендом (та же ловушка, что в М4). Если креатив универсальный и должен подходить любой кампании — оставьте оба поля пустыми.</li>
+        <li>Так же сужает и регион: если у записи указан регион, её по-прежнему можно привязать к любой кампании, но крутиться креатив будет только в этом регионе и нигде больше. Регион у записи имеет смысл указывать только для оператора Russ Outdoor — у остальных операторов это поле не используется.</li>
+      </ul>
+
+      <h4 class="lbl">Подрядчики и файлы</h4>
+      <ul>
+        <li>Добавить подрядчиков можно вручную (когда РК ещё нет) или «из кампании» — тогда операторы подтянутся из уже собранной адресной программы автоматически, но нужны заполненные рекламодатель и бренд в записи.</li>
+        <li>Если у подрядчика нет файла — текущий материал не подходит его экранам по разрешению или формату; нужен дополнительный совместимый файл.</li>
+        <li>Когда вы загружаете исправленный файл того же разрешения взамен отклонённого, он не становится отдельной, никак не связанной строкой — система помечает его версией <code class="tag">v2</code>, <code class="tag">v3</code> и так далее внутри того же слота. Открыв историю версий, видно, за что отклонили предыдущую версию, и не приходится гадать или спрашивать заново.</li>
+        <li>После отправки на модерацию каждому файлу присваивается <b>SSP ID</b> — по нему удобно искать запись в общем списке и вести переписку с оператором.</li>
+      </ul>
+
+      <h4 class="lbl">Модерация</h4>
+      <ul>
+        <li>Отправляется вся запись целиком или отдельный файл. Статусы: «Новый», «На модерации», «Согласован», «Отклонён».</li>
+        <li>При отклонении — прочитать комментарий, подготовить исправленный файл, добавить его в ту же запись, отправить повторно.</li>
+        <li>Срок модерации зависит от оператора и его рабочего графика — отправляйте материалы заранее, с запасом на возможное отклонение и правку.</li>
+      </ul>
+
+      <h4 class="lbl">Удаление</h4>
+      <p>Отдельный файл обычно удаляется только в статусе «Новый». Возможность удалить всю запись зависит от того, привязана ли она к бренду и кампаниям — перед удалением проверяйте связи в карточке.</p>
+
+      <div class="quiz">
+        <p class="q-text">7. В записи первым загружен статичный файл 5 секунд. Позже нужно добавить видеоролик 10 секунд для тех же операторов. Что произойдёт, если просто добавить его в ту же запись?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m7_1"> Кампании начнут корректно использовать оба варианта по ситуации</label></li>
+          <li><label><input type="radio" name="q_m7_1" data-correct="true"> Кампании всё равно будут ориентироваться на тип и длительность первого файла — нужна отдельная запись</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: тип и длительность записи фиксируются первым загруженным файлом."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m7" data-label="Модуль М7 · Креативы">
+        <p class="q-text">Создайте учебную запись креатива: загрузите файл (что грузим — статика или видео, минимум двух разных разрешений), укажите подрядчиков — сначала вручную (когда учебной РК ещё нет), затем «из кампании» на существующей учебной РК (куда грузим — к какой записи и какие операторы подтянутся из её АП автоматически). Опишите, в каком случае какой способ добавления подрядчиков удобнее.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m7a"><span>Создал запись с несколькими файлами разных разрешений под разных операторов</span></label></li>
+          <li><label><input type="checkbox" data-k="m7b"><span>Добавил подрядчиков обоими способами и понимаю, когда какой удобнее</span></label></li>
+          <li><label><input type="checkbox" data-k="m7c"><span>Увидел строку без файла у подрядчика и понял, чего не хватает</span></label></li>
+          <li><label><input type="checkbox" data-k="m7d"><span>Провёл креатив через модерацию до статуса «Согласован» хотя бы у одного оператора</span></label></li>
+          <li><label><input type="checkbox" data-k="m7e"><span>Обработал отклонение: нашёл комментарий, исправил, отправил повторно</span></label></li>
+          <li><label><input type="checkbox" data-k="m7f"><span>Нашёл SSP ID файла и знаю, зачем он нужен</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M8 -->
+    <article class="card" data-block="m8">
+      <div class="mod-head">
+        <span class="mod-n">М8</span>
+        <div>
+          <h3 class="mod-title">Сопроводительные документы и работа с операторами</h3>
+          <p class="mod-goal">Понимать, какой документ нужен под какой макет, и правильно оформлять запрос.</p>
+        </div>
+        <span class="mod-dur">6 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Креативы · Сопроводительные документы</span></div>
+      <p>Модуль готовит к <b>задаче 3 «Коммуникация с операторами»</b>.</p>
+
+      <h4 class="lbl">Когда нужны документы</h4>
+      <p>Оператор может запросить подтверждения прав и юридической корректности рекламы — особенно часто для изображений людей, чужих товарных знаков, иностранных слов в товарном знаке, недвижимости, финансовых и медицинских услуг.</p>
+      <div class="tw">
+        <table>
+          <thead><tr><th>На макете есть</th><th>Обычно нужен</th></tr></thead>
+          <tbody>
+            <tr><td>Изображения людей — фото, видео, сток, ИИ-генерация</td><td>Заверение общее или на физлицо</td></tr>
+            <tr><td>Чужие товарные знаки</td><td>Согласие на использование ТЗ</td></tr>
+            <tr><td>Товарный знак с иностранными словами</td><td>Свидетельство о регистрации ТЗ</td></tr>
+            <tr><td>Недвижимость</td><td>Наименование застройщика и источник проектной декларации на макете</td></tr>
+            <tr><td>Финансовые услуги</td><td>Лицензия или свидетельство о регистрации</td></tr>
+            <tr><td>Медицинские услуги, лекарства</td><td>Лицензия на деятельность / регистрационное удостоверение</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="nl">Актуальный порядок отправки уточняйте у Omni360</span>
+        <p>Для отдельных операторов документы могут запрашиваться дополнительно по email отдельно от загрузки в кабинете. Конкретный адрес, шаблон заверения и требуемые реквизиты меняются — перед отправкой уточняйте их у клиентского сервиса Omni360, не полагайтесь на шаблон из старой переписки.</p>
+      </div>
+
+      <div class="note warn">
+        <span class="nl">Согласование не переносится между закупкой в эфире и программатиком</span>
+        <p>У одного и того же оператора «барабан» (классическая эфирная закупка) и программатик обычно модерирует разный отдел. Из-за этого ролик, который уже одобрили для эфира, программатик может отклонить заново — и наоборот. Если ссылаетесь на прежнее согласование в переписке, это ускоряет рассмотрение, но не гарантирует, что оператор просто повторит старое решение.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">8. На макете указано название ЖК и застройщик, есть ссылка на проектную декларацию. Модель фото людей на макете нет. Какой документ, скорее всего, не понадобится?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m8_1"> Согласие на использование ТЗ, если на макете чужой логотип</label></li>
+          <li><label><input type="radio" name="q_m8_1" data-correct="true"> Заверение на физлицо</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно: заверение на физлицо нужно только когда на макете есть люди." data-no="Неверно: заверение на физлицо требуется для изображений людей, а не для недвижимости."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m8" data-label="Модуль М8 · Сопроводительные документы">
+        <p class="q-text">Опишите три собственных сценария макета (не нужен готовый дизайн — достаточно описания): с фото человека, с чужим товарным знаком, с недвижимостью. Для каждого назовите нужный документ и у кого вы уточните актуальный процесс его отправки конкретному оператору.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m8a"><span>По таблице «на макете есть → обычно нужен» без подсказок называю нужный документ для трёх типов макетов</span></label></li>
+          <li><label><input type="checkbox" data-k="m8b"><span>Знаю, у кого уточнять актуальный адрес/шаблон для отправки документов оператору</span></label></li>
+          <li><label><input type="checkbox" data-k="m8c"><span>Понимаю, почему согласование в барабане не переносится автоматически на программатик у того же оператора</span></label></li>
+          <li><label><input type="checkbox" data-k="m8d"><span>Понимаю риск ссылки на согласование в другой закупочной модели</span></label></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= WEEK 4 ================= -->
+  <section class="part" id="w4">
+    <div class="part-head">
+      <span class="part-kicker">Неделя 4</span>
+      <span class="part-time">≈ 18 ч</span>
+      <h2 class="part-title">Запуск, аналитика и гарантиды</h2>
+    </div>
+    <p class="part-lede">С этой недели кнопки уже необратимы: «Отменить» и запуск кампании не откатываются назад. Поэтому здесь порядок один и тот же для всех трёх моделей закупки — сначала пре-флайт проверка (задача 5), и только потом сама кнопка запуска, а не наоборот.</p>
+
+    <!-- M9 -->
+    <article class="card" data-block="m9">
+      <div class="mod-head">
+        <span class="mod-n">М9</span>
+        <div>
+          <h3 class="mod-title">Сборка RTB-кампании: шаги формы и запуск</h3>
+          <p class="mod-goal">Пройти форму создания кампании и понимать, что после запуска уже не поменять.</p>
+        </div>
+        <span class="mod-dur">8 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Создание аукционной кампании (RTB)</span><span><b>Справка</b> · Запуск, остановка и редактирование</span></div>
+      <p>Модуль готовит к <b>задаче 5 «Настройка кампаний перед запуском»</b>.</p>
+
+      <h4 class="lbl">Три способа создать кампанию</h4>
+      <ul>
+        <li><b>«Запустить кампанию»</b> — заполнить все шаги формы вручную. Основной способ для нестандартных размещений.</li>
+        <li><b>«Спланировать по параметрам»</b> — задать бюджет, даты и города, система предложит набор экранов.</li>
+        <li><b>«Создать по брифу AI»</b> — описать задачу свободным текстом; если рекламодатель или бренд распознаны неоднозначно, помощник предложит выбрать их из справочников. Явно заданные город, период, бюджет и обязательный формат не подменяются автоматически: если условие невыполнимо, помощник обязан предупредить и запросить решение, а не тихо скорректировать бриф.</li>
+      </ul>
+      <p>Во всех трёх случаях результат — черновик, который нужно проверить и дособрать вручную, а не готовая к запуску кампания.</p>
+
+      <h4 class="lbl">Шаги формы</h4>
+      <p>Основные параметры → Бюджет → Экраны → Ограничения показов → Рекламные материалы → Фотоотчёты → Сводка → Статистика. Сохранить кампанию можно, только когда на «Основных параметрах» заполнены обязательные поля, а на «Экранах» выбран хотя бы один экран.</p>
+
+      <h4 class="lbl">Что нельзя изменить, если кампания хоть раз запускалась</h4>
+      <p>Если кампания когда-либо запускалась — в том числе сейчас остановлена или на паузе — <b>тип ставки</b> и <b>надбавка</b> остаются заблокированными навсегда. Остальные доступные поля редактируются по обычным правилам текущего статуса: «Остановить» → внести правки → сохранить → <b>снова запустить</b>. Забыть последний шаг — значит оставить активную кампанию на паузе.</p>
+
+      <div class="note tip">
+        <span class="nl">Индикаторы шагов</span>
+        <p>Галочка у шага показывает, что обязательные данные заполнены, синий индикатор — текущий шаг. Это не замена финальной проверки: перед запуском всё равно смотрите «Сводку» целиком.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">9. Кампания была запущена, потом остановлена на паузу для правок. Можно ли поменять тип ставки с «по выходам» на «по OTS»?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m9_1"> Да, пока кампания не в статусе «Активна»</label></li>
+          <li><label><input type="radio" name="q_m9_1" data-correct="true"> Нет — раз кампания хоть раз запускалась, тип ставки заблокирован навсегда</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: блокировка типа ставки и надбавки наступает после первого запуска и не снимается паузой."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m9" data-label="Модуль М9 · Сборка RTB-кампании">
+        <p class="q-text">Создайте черновик кампании двумя разными способами («Запустить кампанию» вручную и «Спланировать по параметрам» или AI-бриф) и сравните, что форма заполнила сама, а что пришлось доделывать руками.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m9a"><span>Собрал учебную РК полностью по всем шагам формы и сохранил её</span></label></li>
+          <li><label><input type="checkbox" data-k="m9b"><span>Попробовал создание кампании через «Спланировать по параметрам» или AI-бриф</span></label></li>
+          <li><label><input type="checkbox" data-k="m9c"><span>Проверил статусы согласования креативов в «Сводке» и нашёл незакрытого оператора</span></label></li>
+          <li><label><input type="checkbox" data-k="m9d"><span>Отредактировал остановленную кампанию и не забыл запустить её обратно</span></label></li>
+          <li><label><input type="checkbox" data-k="m9e"><span>Называю два параметра, заблокированных после первого запуска</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M10 -->
+    <article class="card" data-block="m10">
+      <div class="mod-head">
+        <span class="mod-n">М10</span>
+        <div>
+          <h3 class="mod-title">Статистика, отчёты и фотоотчёты</h3>
+          <p class="mod-goal">Собрать клиенту точный отчёт и не перепутать между собой инструменты выгрузки статистики.</p>
+        </div>
+        <span class="mod-dur">6 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · Статистика и выгрузки</span></div>
+      <p>Модуль готовит к <b>задачам 6 и 7</b> — фотоотчёты и анализ кампаний.</p>
+
+      <h4 class="lbl">Сводные показатели и вкладки</h4>
+      <ul>
+        <li>Сверху — показы, OTS, CPM, расход, остаток бюджета, темп открутки; если у кампании несколько операторов — отдельная разбивка «По подрядчикам». В режиме «Последний час» сравнение с темпом кампании скрывается — отдельного часового плана нет.</li>
+        <li>Вкладки: <b>Показы</b> (успешные и отклонённые выходы с причинами и фильтрами), <b>Экраны</b> (эффективность и карта), <b>Графики</b> (по дням/часам), <b>Детализация</b>.</li>
+        <li>«Фотоотчёт за сегодня» различает «снимков нет» и «снимки получены, но фото ещё не выбрано» — во втором случае доступен ручной выбор или автоподбор.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Смена креатива ломает выборку</span>
+        <p>Если в фильтре графиков/статистики остались отмечены только текущие (активные) записи креативов, часть истории по прежним креативам может не попасть в выборку. Для полной картины отметьте в фильтре все нужные записи.</p>
+      </div>
+
+      <h4 class="lbl">Экспорт — не путайте два разных инструмента</h4>
+      <ul>
+        <li>Меню «Экспорт» над таблицей статистики: <b>Эфирная справка</b> (за период или по дням), <b>Статистика (Excel)</b> — выгружает только отфильтрованное и видимые колонки, <b>Фотоотчёт (ZIP)</b>, <b>Статистика по дням</b>. Ссылка на готовый файл приходит в уведомления.</li>
+        <li>Кнопка <b>«Сформировать отчёт»</b> — отдельный инструмент: конструктор публичной ссылки на выбранные фотографии для клиента. Это не эфирная справка и не замена ей.</li>
+      </ul>
+
+      <div class="quiz">
+        <p class="q-text">10. Клиенту нужен полный Excel со статистикой показов за весь период кампании, а в таблице сейчас включён фильтр по последней неделе. Что произойдёт при экспорте прямо сейчас?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m10_1"> Экспортируется весь период — фильтр влияет только на экран</label></li>
+          <li><label><input type="radio" name="q_m10_1" data-correct="true"> Экспортируется только отфильтрованная неделя — фильтр учитывается при выгрузке</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: экспорт статистики забирает только отфильтрованные данные и видимые колонки — фильтры нужно снять до выгрузки."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m10" data-label="Модуль М10 · Статистика и отчёты">
+        <p class="q-text">Выгрузите эфирную справку общую и по дням на учебной кампании и опишите, чем отличаются файлы. Отдельно сформируйте публичную ссылку с фотографиями через «Сформировать отчёт» и объясните разницу с эфирной справкой.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m10a"><span>Выгрузил эфирную справку общую и по дням, объяснил разницу</span></label></li>
+          <li><label><input type="checkbox" data-k="m10b"><span>Отфильтровал статистику и выгрузил Excel только с нужными колонками</span></label></li>
+          <li><label><input type="checkbox" data-k="m10c"><span>Нашёл во вкладке «Показы» отклонённые выходы и назвал причины</span></label></li>
+          <li><label><input type="checkbox" data-k="m10d"><span>Построил графики по дням и по часам</span></label></li>
+          <li><label><input type="checkbox" data-k="m10e"><span>Объясняю разницу между «Сформировать отчёт» и эфирной справкой</span></label></li>
+          <li><label><input type="checkbox" data-k="m10f"><span>Выбрал фото вручную в «Фотоотчёте за сегодня» и выгрузил архив ZIP</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- M11 -->
+    <article class="card" data-block="m11">
+      <div class="mod-head">
+        <span class="mod-n">М11</span>
+        <div>
+          <h3 class="mod-title">Гарантиды: ПГ и АГ</h3>
+          <p class="mod-goal">Знать, где заканчивается право на ошибку.</p>
+        </div>
+        <span class="mod-dur">4 ч</span>
+      </div>
+
+      <div class="src"><span><b>Справка</b> · ПГ и АГ: гарантированные размещения</span></div>
+
+      <h4 class="lbl">ПГ (программатический гарантид)</h4>
+      <p>Создаётся в той же общей форме создания РК, что и RTB, с типом «Прог. гарантид»: основные параметры и бюджет, выбор экранов, график и ограничения показов, рекламные материалы, сводка. Отличие от RTB — фиксированная стоимость размещения вместо аукционной ставки. Доступность полей для редактирования зависит от статуса кампании и прав аккаунта — как правило, гарантированные условия правятся более ограниченно, чем в RTB.</p>
+
+      <h4 class="lbl">АГ (автогарантия) — отдельная форма</h4>
+      <ol class="steps">
+        <li><b>Основные параметры.</b> Название, рекламодатель и связанный с ним бренд (можно создать новый прямо здесь), даты начала/окончания (начало не в прошлом, конец не раньше начала), частота выхода — «в каждом блоке» или «через блок».</li>
+        <li><b>Экраны.</b> Выбор конкретных экранов для фиксированного размещения, проверка адресов, форматов и доступности на период.</li>
+        <li><b>Стоимость.</b> Система показывает прайс за выбранный набор экранов. Дополнительно — <b>либо</b> скидка в процентах, <b>либо</b> предложить свою цену (поля взаимоисключающие: заполнение одного очищает другое), плюс комментарий к цене.</li>
+        <li><b>Итоги.</b> Проверка периода, количества экранов, цены; раскрыть список экранов и сверить GID, город, адрес, формат, сторону, месячный прайс и бюджет по каждому. Дальше — «Сохранить черновик» или «Отправить на модерацию».</li>
+      </ol>
+
+      <div class="note stop">
+        <span class="nl">Условия фиксируются на отправке</span>
+        <p>Отправка на модерацию — не подтверждение немедленного запуска, но и не черновик: даты, набор экранов и цену стоит перепроверить именно перед этим шагом. Отмена уже согласованного гарантированного размещения обычно требует отдельной договорённости с оператором, а не одной кнопки в интерфейсе — уточняйте условия у Omni360 до отправки, а не после.</p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">11. В шаге «Стоимость» формы АГ вы уже указали скидку 10%. Можно ли дополнительно вписать в поле «Предложить цену» свою сумму?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m11_1"> Да, система применит меньшую из двух</label></li>
+          <li><label><input type="radio" name="q_m11_1" data-correct="true"> Нет — поля взаимоисключающие, заполнение одного очищает другое</label></li>
+        </ul>
+        <p class="q-fb" data-ok="Верно." data-no="Неверно: скидка и предложенная цена не суммируются и не сравниваются — это одно из двух полей."></p>
+      </div>
+
+      <div class="opentask" data-k="ot_m11" data-label="Модуль М11 · Гарантиды">
+        <p class="q-text">Соберите учебную АГ-кампанию до шага «Итоги» (не отправляя на реальную модерацию без подтверждения наставника). Опишите, чем шаг «Стоимость» в АГ отличается от работы со ставками в RTB.</p>
+        <p class="q-hint">Практическое задание — выполняется в тестовом кабинете, только с наставником.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Чек-точка</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="m11a"><span>Собрал учебную АГ-кампанию до шага «Итоги»</span></label></li>
+          <li><label><input type="checkbox" data-k="m11b"><span>Проверил список экранов и сверил GID/прайс/бюджет по каждому</span></label></li>
+          <li><label><input type="checkbox" data-k="m11c"><span>Знаю, что скидка и предложенная цена — взаимоисключающие поля</span></label></li>
+          <li><label><input type="checkbox" data-k="m11d"><span>Собрал учебную ПГ-кампанию в общей форме создания РК с типом «Прог. гарантид»</span></label></li>
+          <li><label><input type="checkbox" data-k="m11e"><span>Объясняю клиенту, почему отмена гарантированного размещения требует согласования с оператором</span></label></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TASKS ================= -->
+  <section class="part" id="tasks">
+    <div class="part-head">
+      <span class="part-kicker">Часть II</span>
+      <h2 class="part-title">Семь рабочих задач</h2>
+    </div>
+    <p class="part-lede">Задачи выстроены в порядке жизненного цикла кампании — от подготовки требований до разбора результатов. У каждой — открытое поле для отчёта куратору с результатом выполнения.</p>
+
+    <!-- T1 -->
+    <article class="task" data-block="t1">
+      <div class="task-head">
+        <span class="task-stage">Этап 1 · до макетов</span>
+        <h3 class="task-title">Подготовка ТТ</h3>
+        <span class="diff easy">Легко</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Согласованная или черновая адресная программа</div>
+        <div><span class="k">Выход</span>Сводка требований для дизайнера: разрешения, хронометраж, форматы файлов</div>
+      </div>
+
+      <h4 class="lbl">Порядок</h4>
+      <ol class="steps">
+        <li>Открыть таблицу выбора экранов кампании.</li>
+        <li>Выгрузить «PDF / Excel» по текущему набору экранов.</li>
+        <li>Пройтись точечно по кнопке ТТ у нестандартных форматов — или собрать то же самое сразу по всей АП инструментом «Сбор технических требований» из <a href="https://bucolic-cascaron-cfe55e.netlify.app/" target="_blank" rel="noopener">панели инструментов отдела</a>.</li>
+        <li>Выписать длительность слота из колонки в таблице — не из PDF оператора.</li>
+        <li>Если кнопка ТТ неактивна, а инструмент тоже не нашёл ссылку — эскалировать тому, кто ведёт отношения с этим оператором, а не подставлять требования «на глаз».</li>
+        <li>Свести всё в одну таблицу: формат → разрешения → хронометраж → тип файла.</li>
+      </ol>
+
+      <h4 class="lbl">Чек-лист перед передачей дизайнеру</h4>
+      <ul>
+        <li>Каждый формат в АП закрыт хотя бы одним разрешением.</li>
+        <li>Хронометраж взят из системы, а не из PDF оператора.</li>
+        <li>Учтено, что у одного экрана может быть несколько доступных слотов — чем длиннее слот, тем выше минимальная ставка.</li>
+        <li>Медиафасады: длительность и наличие эфира подтверждены оператором через Omni360.</li>
+        <li>В требованиях явно написано: видео без звука и без аудиоканалов.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Взять длительность из общего PDF оператора. Отдать дизайнеру файл оператора «как есть», без сводки разрешений. Не заметить неактивную кнопку ТТ и уйти в работу с неактуальными требованиями.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t1" data-label="Задача Т1 · Подготовка ТТ">
+        <p class="q-text">Приложите сводку ТТ по учебной АП из трёх форматов и минимум двух операторов и опишите, что было нестандартным.</p>
+        <textarea placeholder="Ссылка на файл / краткое описание сводки..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t1a"><span>Сделал сводку ТТ по учебной АП из трёх форматов и двух операторов</span></label></li>
+          <li><label><input type="checkbox" data-k="t1b"><span>Наставник принял сводку без правок</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T2 -->
+    <article class="task" data-block="t2">
+      <div class="task-head">
+        <span class="task-stage">Этап 2 · планирование</span>
+        <h3 class="task-title">Подготовка медиапланов</h3>
+        <span class="diff mid">Средне</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Бриф: бюджет, гео, период, целевая аудитория, KPI</div>
+        <div><span class="k">Выход</span>АП со ставками, графиком и прогнозом, который можно защитить</div>
+      </div>
+
+      <h4 class="lbl">Порядок</h4>
+      <ol class="steps">
+        <li>Прикинуть порядок цифр в Планировщике (см. М6): черновой прогноз по бюджету, гео и периоду ещё до захода в саму кампанию.</li>
+        <li>Определить тип ставки. По OTS — только там, где экраны его передают; indoor отпадает сразу.</li>
+        <li>Заполнить основные параметры и бюджет: сумма клиента без НДС, надбавка, лимиты на сутки и час.</li>
+        <li>Собрать АП: автоподбор по бюджету, «Поиск мест» или импорт по GID — с ручной доводкой на карте.</li>
+        <li>Включить нужные фильтры («Только с ОТС», «Только активные»), если это в требованиях к отчётности.</li>
+        <li>Проставить ставки: начать с рекомендованной, при необходимости поднять минимальную на процент.</li>
+        <li>Задать график вещания, если 24/7 не подходит.</li>
+        <li>Посчитать прогноз в двух-трёх комбинациях параметров и выбрать сценарий для клиента.</li>
+      </ol>
+
+      <h4 class="lbl">Чек-лист медиаплана</h4>
+      <ul>
+        <li>Бюджет указан без НДС, отдельно виден расчёт с НДС 22% и сходится с ожиданиями клиента.</li>
+        <li>Месячный лимит рекламодателя не превышен с учётом других его кампаний.</li>
+        <li>В ставках точка, а не запятая, и ни одна ставка не равна минимальной.</li>
+        <li>Прогноз в презентации назван прогнозом, а не гарантией.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Собрать красивую АП и забыть про суточные лимиты — бюджет выгорит за первые дни. Перепутать сумму с НДС и без НДС при защите бюджета перед клиентом. Поставить прайм-тайм и не пересчитать прогноз.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t2" data-label="Задача Т2 · Подготовка медиапланов">
+        <p class="q-text">Опишите два собранных медиаплана по разным брифам (один по выходам, один по OTS): какими инструментами собирали АП и почему выбрали такие ставки.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t2a"><span>Собрал два медиаплана по разным брифам: один по выходам, один по OTS</span></label></li>
+          <li><label><input type="checkbox" data-k="t2b"><span>Защитил выбор ставок и графика перед наставником</span></label></li>
+          <li><label><input type="checkbox" data-k="t2c"><span>Пересобрал план после правки бюджета клиента вдвое</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T3 -->
+    <article class="task" data-block="t3">
+      <div class="task-head">
+        <span class="task-stage">Этап 3 · сквозной, всю кампанию</span>
+        <h3 class="task-title">Коммуникация с операторами</h3>
+        <span class="diff mid">Средне</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Вопрос, который нельзя закрыть внутри платформы</div>
+        <div><span class="k">Выход</span>Ответ оператора или подтверждённые условия</div>
+      </div>
+
+      <p>Прямого канала к оператору в кабинете нет: коммуникация идёт через клиентский сервис Omni360. Качество запроса определяет скорость ответа.</p>
+
+      <h4 class="lbl">Частые поводы написать</h4>
+      <ul>
+        <li>Кнопка ТТ неактивна — оператор не передал актуальные требования.</li>
+        <li>Нужно уточнить длительность слота или наличие свободного эфира на медиафасаде — в системе этого не видно.</li>
+        <li>Креатив отклонён, комментарий непонятен или спорен.</li>
+        <li>Нужен актуальный шаблон/адрес для сопроводительных документов конкретного оператора.</li>
+        <li>Согласование цены и условий по ПГ/АГ.</li>
+        <li>Инвентарь недоступен к покупке — подключение через команду Omni360.</li>
+      </ul>
+
+      <h4 class="lbl">Шаблон запроса</h4>
+      <div class="tw">
+        <table>
+          <thead><tr><th>Поле</th><th>Что писать</th></tr></thead>
+          <tbody>
+            <tr><td><b>Идентификатор</b></td><td>SSP ID файла, GID экрана, название и номер РК — то, по чему оператор найдёт объект</td></tr>
+            <tr><td><b>Оператор</b></td><td>Кому адресован вопрос</td></tr>
+            <tr><td><b>Суть</b></td><td>Одно предложение: что нужно получить или подтвердить</td></tr>
+            <tr><td><b>Срок</b></td><td>Дата старта кампании — от неё считается приоритет</td></tr>
+            <tr><td><b>Проверено</b></td><td>Что вы уже посмотрели сами, чтобы вопрос не вернулся к вам же</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Написать «креатив отклонили, что делать» без SSP ID. Пообещать клиенту срок ответа оператора, не заложив выходные и загрузку очереди модерации. Ссылаться на согласование в другой закупочной модели без предупреждения о риске.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t3" data-label="Задача Т3 · Коммуникация с операторами">
+        <p class="q-text">Оформите по шаблону три реальных или учебных запроса и приложите, довели ли хотя бы один до ответа оператора.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t3a"><span>Оформил три запроса по шаблону, наставник отправил их без правок</span></label></li>
+          <li><label><input type="checkbox" data-k="t3b"><span>Довёл до ответа один запрос по ТТ и один по отклонённому креативу</span></label></li>
+          <li><label><input type="checkbox" data-k="t3c"><span>Уточнил у Omni360 актуальный порядок отправки документов хотя бы одному оператору</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T4 -->
+    <article class="task" data-block="t4">
+      <div class="task-head">
+        <span class="task-stage">Этап 4 · до запуска, с запасом в несколько дней</span>
+        <h3 class="task-title">Загрузка и согласование креативов</h3>
+        <span class="diff mid">Средне</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Готовые макеты и список операторов АП</div>
+        <div><span class="k">Выход</span>Записи креативов со статусом «Согласован» у всех нужных операторов</div>
+      </div>
+
+      <h4 class="lbl">Порядок</h4>
+      <ol class="steps">
+        <li>Сгруппировать макеты: одна запись = один тип файла + одна длительность (заданная первым загруженным файлом).</li>
+        <li>Создать запись: понятное название с датой, брендом и городом; звуковую дорожку выключить.</li>
+        <li>Добавить подрядчиков — вручную или «из кампании», если РК с АП уже есть.</li>
+        <li>Догрузить дополнительные файлы там, где у оператора нет подходящего файла.</li>
+        <li>Отправить на модерацию — всю запись или отдельные файлы.</li>
+        <li>Отработать отклонения: прочитать комментарий, исправить макет, загрузить как дополнительную версию, отправить повторно.</li>
+      </ol>
+
+      <h4 class="lbl">Чек-лист перед отправкой</h4>
+      <ul>
+        <li>Все нужные типы/длительности из АП закрыты отдельными записями.</li>
+        <li>У каждого оператора в блоке подрядчика есть файл.</li>
+        <li>Видео без аудиоканалов, тумблер звука выключен.</li>
+        <li>SSP ID файлов зафиксированы для переписки с операторами.</li>
+        <li>До старта кампании остаётся минимум несколько рабочих дней.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Указать бренд в записи и потом не найти её при привязке к другой кампании. Добавить файл другого хронометража в существующую запись вместо создания новой. Отправить на модерацию в пятницу под понедельничный старт. Пытаться удалить файл, который уже на модерации.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t4" data-label="Задача Т4 · Загрузка и согласование креативов">
+        <p class="q-text">Опишите, как провели запись через модерацию у двух операторов, и как отработали хотя бы одно отклонение (если оно было).</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t4a"><span>Провёл запись с несколькими разрешениями через модерацию у двух операторов</span></label></li>
+          <li><label><input type="checkbox" data-k="t4b"><span>Отработал реальное отклонение и добился «Согласован»</span></label></li>
+          <li><label><input type="checkbox" data-k="t4c"><span>Собрал и отправил комплект документов под макет с изображением человека</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T5 -->
+    <article class="task" data-block="t5">
+      <div class="task-head">
+        <span class="task-stage">Этап 5 · точка невозврата</span>
+        <h3 class="task-title">Настройка кампаний перед запуском</h3>
+        <span class="diff hard">Сложно</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Собранная РК, согласованные креативы, утверждённый бюджет</div>
+        <div><span class="k">Выход</span>Кампания в статусе «Активна», которая откручивается ровно</div>
+      </div>
+      <p>Сложность выше, чем у соседних задач: здесь сходятся все предыдущие этапы, а часть решений после запуска уже не отыграть — особенно в ПГ и АГ.</p>
+
+      <h4 class="lbl">Пре-флайт по шагам формы</h4>
+      <ol class="steps">
+        <li><b>Основные параметры.</b> Даты корректны. Тип ставки выбран окончательно — после первого запуска не меняется, как и надбавка.</li>
+        <li><b>Бюджет.</b> Бюджет клиента и баера сходятся с учётом надбавки, НДС 22% посчитан отдельно, лимиты на сутки и час заданы.</li>
+        <li><b>Экраны.</b> Ставки выше минимальных, дробные — через точку. График вещания соответствует брифу.</li>
+        <li><b>Ограничения показов.</b> Интервал между показами и максимумы за период заданы, если нужна ровная открутка.</li>
+        <li><b>Рекламные материалы.</b> Креативы привязаны для каждой длительности/типа, видны на вкладке каждого оператора со статусом «Согласован».</li>
+        <li><b>Сводка.</b> Ни одного креатива «на модерации» или «отклонён». Прогноз пересчитан после последней правки.</li>
+      </ol>
+
+      <h4 class="lbl">Финальные проверки перед кнопкой</h4>
+      <ul>
+        <li>График установлен корректно.</li>
+        <li>Ставки выше минимальных.</li>
+        <li>Лимиты соответствуют бюджету и прогнозу.</li>
+        <li>Для каждой стороны есть подходящий согласованный креатив.</li>
+      </ul>
+
+      <div class="note stop">
+        <span class="nl">Необратимое</span>
+        <p>«Отменить» в RTB — навсегда, для паузы только «Остановить». Тип ставки и надбавка блокируются после первого запуска в любой модели. В ПГ и АГ отмена уже согласованного размещения обычно требует отдельной договорённости с оператором. После правок в активной RTB кампанию надо <b>снова запустить</b> — иначе она так и останется на паузе.</p>
+      </div>
+
+      <div class="note tip">
+        <span class="nl">Отложенный запуск</span>
+        <p>Кампанию можно запустить заранее: показы всё равно начнутся в дату начала и по графику вещания. Это безопаснее, чем запускать в 9 утра в день старта.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t5" data-label="Задача Т5 · Настройка кампаний перед запуском">
+        <p class="q-text">Пройдите пре-флайт по чужой (учебной) кампании, найдите минимум две ошибки и опишите их. Затем запустите свою кампанию под наставником и подтвердите статус «Активна».</p>
+        <p class="q-hint">Практическое задание — выполняется под наблюдением наставника.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t5a"><span>Прошёл пре-флайт по чужой кампании и нашёл минимум две ошибки</span></label></li>
+          <li><label><input type="checkbox" data-k="t5b"><span>Запустил кампанию под наставником и убедился в статусе «Активна»</span></label></li>
+          <li><label><input type="checkbox" data-k="t5c"><span>Внёс правку в активную РК и вернул её в работу</span></label></li>
+          <li><label><input type="checkbox" data-k="t5d"><span>Перечисляю необратимые действия по всем трём моделям закупки</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T6 -->
+    <article class="task" data-block="t6">
+      <div class="task-head">
+        <span class="task-stage">Этап 6 · во время и после открутки</span>
+        <h3 class="task-title">Выбор и запрос фотоотчётов</h3>
+        <span class="diff easy">Легко</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Идущая или завершённая кампания</div>
+        <div><span class="k">Выход</span>Фото в отчёте клиенту и архив ФО</div>
+      </div>
+      <p>Задача несложная, но с дедлайном: не все экраны оснащены фотоловушками, а срок доступности снимков ограничен, поэтому пропущенное окно не восстановить.</p>
+
+      <div class="note stop">
+        <span class="nl">Сколько хранятся фото</span>
+        <p>У оператора Russ Outdoor снимки с фотоловушек хранятся 2 недели. У остальных операторов срок сильно короче и разный — вплоть до пары суток, зависит от конкретного оператора, уточняйте заранее. Отдельно: то, что успело дойти и сохраниться в нашей системе, на серверах Omni360 хранится 30 дней — после этого исходник у нас тоже пропадает, даже если у оператора его и не было изначально.</p>
+      </div>
+
+      <h4 class="lbl">Порядок</h4>
+      <ol class="steps">
+        <li>На шаге «Фотоотчёты» формы создания РК: «Сохранить все фотоотчёты» либо «Настроить параметры фотоотчётов» с ограничением количества на пару «экран — креатив».</li>
+        <li>Во время открутки: раздел «Статистика» → «Фотоотчёт за сегодня» → «Статистика» — проверить покрытие и проблемные экраны, при необходимости выбрать фото вручную или через автоподбор.</li>
+        <li>Для клиента: «Сформировать отчёт» — выбрать фотографии, настроить вид получателя и поделиться публичной ссылкой.</li>
+        <li>Для архива: «Экспорт» → «Фотоотчёт (ZIP)» с фильтром по датам, ссылка приходит в уведомления.</li>
+        <li>Если фотоловушек на нужных экранах нет — обсудить с клиентом ожидания заранее: 100%-ное покрытие фото по всей АП не гарантируется.</li>
+      </ol>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Пообещать клиенту фото по всей АП: не все экраны оснащены фотоловушками. Перепутать «Сформировать отчёт» (публичная ссылка на подборку фото) с эфирной справкой. Затянуть с выгрузкой архива дольше 30 дней — после этого срока фото пропадает даже из системы Omni360.</p>
+      </div>
+
+      <h4 class="lbl">Когда своих фотоловушек нет: заказ выезда фотографа</h4>
+      <p>На части конструкций (билборды, ситиборды и другие форматы без камеры) автоматического фотоотчёта не будет — фото заказывается отдельно у подрядчика, который присылает на адрес живого фотографа. Пример такой работы — агентство Grace Outdoor.</p>
+      <ol class="steps">
+        <li>Отправить подрядчику запрос ФО по конкретным адресам с желаемой датой/временем выезда.</li>
+        <li>Подрядчик подтверждает исходя из того, где сейчас физически находится фотограф, — если он в другом городе, выезд сдвигается на несколько дней, это нормально и не зависит от вас.</li>
+        <li>Перед выездом убедитесь, что размещение уже стартовало. Если по данным клиента/кампании конструкции ещё нет в эфире — предупредите подрядчика и отмените выезд по этим адресам заранее, иначе оплатите фотографу пустую поездку.</li>
+        <li>Получить промежуточный отчёт по ссылке-мониторингу от подрядчика и сверить с тем, что нужно клиенту.</li>
+      </ol>
+      <div class="note warn">
+        <span class="nl">Внеплановые и повторные выезды стоят денег</span>
+        <p>Обычный график съёмки — часть договорённостей с подрядчиком и в него заложен. А вот повторный выезд на те же адреса или съёмка в узком нестандартном окне времени (когда фотографу нужно успеть строго в конкретный час) — это отдельная платная услуга, подрядчик считает её за адрес. Прежде чем обещать клиенту точную дату повторной съёмки, уточните у подрядчика стоимость.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t6" data-label="Задача Т6 · Фотоотчёты">
+        <p class="q-text">Настройте фотоотчёты на учебной кампании, отберите фото вручную и сформируйте публичную ссылку для клиента. Опишите разницу между этой ссылкой и архивом ZIP.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t6a"><span>Настроил ФО на этапе создания кампании и объяснил разницу режимов</span></label></li>
+          <li><label><input type="checkbox" data-k="t6b"><span>Отобрал фото вручную там, где они есть</span></label></li>
+          <li><label><input type="checkbox" data-k="t6c"><span>Сформировал публичную ссылку клиенту и отдельно выгрузил архив ZIP</span></label></li>
+          <li><label><input type="checkbox" data-k="t6d"><span>Знаю порядок заказа выезда фотографа у подрядчика и почему повторный выезд может быть платным</span></label></li>
+        </ul>
+      </div>
+    </article>
+
+    <!-- T7 -->
+    <article class="task" data-block="t7">
+      <div class="task-head">
+        <span class="task-stage">Этап 7 · по ходу и на закрытии</span>
+        <h3 class="task-title">Анализ кампаний</h3>
+        <span class="diff mid">Средне</span>
+      </div>
+      <div class="io">
+        <div><span class="k">Вход</span>Идущая кампания и её статистика</div>
+        <div><span class="k">Выход</span>Решение по оптимизации или отчёт клиенту с выводами</div>
+      </div>
+
+      <h4 class="lbl">Что смотреть по ходу кампании</h4>
+      <ol class="steps">
+        <li>Раздел «Сводка» → «Детали кампании»: план и факт, причины отклонений, лимиты и рекомендации по конкретной РК.</li>
+        <li>Вкладка «Показы»: доля отклонённых выходов и причины. Много проигрышей в аукционе — сигнал поднять ставку.</li>
+        <li>Вкладка «Графики»: попадаем ли в заявленный график и ровно ли расходуется бюджет.</li>
+        <li>Вкладка «Экраны» и карта: какие экраны реально работают, а какие висят мёртвым грузом.</li>
+      </ol>
+
+      <h4 class="lbl">Что с этим делать</h4>
+      <ul>
+        <li>Ставки ниже конкурентных — остановить, поднять, запустить обратно.</li>
+        <li>Бюджет выгорает к обеду — задать или ужесточить часовой лимит, включить оптимальную модель.</li>
+        <li>Показы идут вне нужного времени — сузить график вещания.</li>
+        <li>В «Деталях кампании» — блок «Рекомендации для клиента» уже формирует краткое резюме периода, «Скопировать текст» переносит его в черновик отчёта.</li>
+      </ul>
+
+      <h4 class="lbl">Отчёт клиенту</h4>
+      <ul>
+        <li>Эфирная справка — общая за период или по дням, выбирайте тип осознанно.</li>
+        <li>Экспорт статистики в Excel забирает только отфильтрованное и видимые колонки — проверьте фильтры перед выгрузкой.</li>
+        <li>Если креативы менялись, снимите отметки в фильтре, иначе увидите статистику только по активным записям.</li>
+      </ul>
+
+      <div class="note warn">
+        <span class="nl">Типичные ошибки</span>
+        <p>Считать все строки статистики показами — там есть и отклонённые выходы. Выгрузить Excel, забыв про включённый фильтр по дате, и отдать клиенту неполные данные.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_t7" data-label="Задача Т7 · Анализ кампаний">
+        <p class="q-text">Разберите завершённую или идущую учебную кампанию: назовите причины недолива (если есть) и предложите одну обоснованную оптимизацию. Используйте «Рекомендации для клиента» как основу отчёта.</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Освоено</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="t7a"><span>Разобрал завершённую кампанию и назвал причины недолива</span></label></li>
+          <li><label><input type="checkbox" data-k="t7b"><span>Предложил и обосновал оптимизацию по идущей кампании</span></label></li>
+          <li><label><input type="checkbox" data-k="t7c"><span>Собрал полный отчёт клиенту: эфирная справка, статистика, фотоотчёты</span></label></li>
+        </ul>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= GLOSSARY ================= -->
+  <section class="part" id="gloss">
+    <div class="part-head">
+      <span class="part-kicker">Часть III</span>
+      <h2 class="part-title">Словарь</h2>
+    </div>
+    <p class="part-lede">Минимум, без которого не получится ни разговор с оператором, ни письмо клиенту.</p>
+    <div class="card">
+      <dl class="gloss">
+        <div class="g"><dt>DOOH</dt><dd>Digital Out of Home — цифровая наружная реклама: билборды, экраны в метро, интерактивные конструкции.</dd></div>
+        <div class="g"><dt>outdoor / indoor</dt><dd>Улица против помещений. Определяет не тип конструкции, а где она стоит: экран на фасаде ТЦ — outdoor, а похожий экран в фойе того же ТЦ — уже indoor, хотя физически это два разных экрана.</dd></div>
+        <div class="g"><dt>DSP / SSP</dt><dd>Платформа со стороны спроса и со стороны предложения. Мы работаем в DSP OmniDSP, инвентарь приходит из SSP операторов.</dd></div>
+        <div class="g"><dt>RTB</dt><dd>Аукцион в реальном времени за право показать креатив в конкретный момент.</dd></div>
+        <div class="g"><dt>OTS</dt><dd>Opportunity To See — оценочное количество контактов с экраном. Передают не все экраны; indoor — как правило, никогда.</dd></div>
+        <div class="g"><dt>АП</dt><dd>Адресная программа — список экранов кампании.</dd></div>
+        <div class="g"><dt>GID</dt><dd>Уникальный идентификатор экрана/стороны в системе. Используется при импорте и в переписке с оператором.</dd></div>
+        <div class="g"><dt>POI</dt><dd>Точка интереса — адрес или координата, вокруг которой в заданном радиусе набирается инвентарь.</dd></div>
+        <div class="g"><dt>Слот</dt><dd>Отрезок рекламного блока, доступный для программатика. Определяет хронометраж креатива и минимальную ставку.</dd></div>
+        <div class="g"><dt>Запись креатива</dt><dd>Карточка с одним или несколькими файлами одного типа и одной длительности (задаётся первым загруженным файлом). К кампании привязывается запись, а не отдельный файл.</dd></div>
+        <div class="g"><dt>SSP ID</dt><dd>Идентификатор, который присваивается файлу креатива после отправки подрядчику — используется для поиска записи и переписки с оператором.</dd></div>
+        <div class="g"><dt>ФО</dt><dd>Фотоотчёт — снимок с фотоловушки в момент выхода креатива.</dd></div>
+        <div class="g"><dt>ЭС</dt><dd>Эфирная справка — итоговый отчёт по кампании в разрезе сторон, выгружается через меню «Экспорт».</dd></div>
+        <div class="g"><dt>ТТ</dt><dd>Технические требования оператора к креативу: разрешение, хронометраж, формат, вес.</dd></div>
+        <div class="g"><dt>ПГ (Прог. гарантид)</dt><dd>Программатический гарантид — фиксированная стоимость размещения, настраивается в общей форме создания РК.</dd></div>
+        <div class="g"><dt>АГ (Автогарантия)</dt><dd>Прямая сделка на фиксированные экраны, даты и цену. Собирается в отдельной форме: Основные параметры → Экраны → Стоимость → Итоги.</dd></div>
+        <div class="g"><dt>НДС</dt><dd>22% в текущей системе, начисляется отдельно поверх бюджета клиента без НДС; ставки и лимиты всегда указываются без НДС.</dd></div>
+        <div class="g"><dt>Надбавка</dt><dd>Процент агентства поверх цены оператора. Определяет, какие цены видит клиент. Поле по умолчанию 0% — специально обнулять его не нужно.</dd></div>
+        <div class="g"><dt>ОРД / ЕРИР</dt><dd>Оператор рекламных данных и единый реестр. Нужны для интернет-рекламы; для DOOH маркировка не требуется.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ================= EXAM ================= -->
+  <section class="part" id="exam">
+    <div class="part-head">
+      <span class="part-kicker">Часть IV</span>
+      <h2 class="part-title">Аттестация</h2>
+    </div>
+    <p class="part-lede">Сквозной кейс на конец четвёртой недели. Выполняется на тестовом рекламодателе, разбирается с наставником.</p>
+
+    <div class="card">
+      <h4 class="lbl">Бриф</h4>
+      <p>Сеть кофеен, 40 точек в Москве и Московской области. Бюджет 450 000 ₽ без НДС, период — две недели, цель — трафик в точки в утренние и вечерние часы. Клиент хочет отчёт с фотографиями и просит «показать охват».</p>
+
+      <h4 class="lbl">Задания</h4>
+      <ol class="steps">
+        <li>Выбрать модель закупки и обосновать выбор в трёх предложениях.</li>
+        <li>Завести рекламодателя и бренд, выдать клиенту гостевой доступ, объяснить, что он увидит.</li>
+        <li>Собрать АП вокруг 40 адресов через «Поиск мест» (адреса или координаты), радиус обосновать.</li>
+        <li>Определить хронометраж по слотам и подготовить сводку ТТ для дизайнера.</li>
+        <li>Загрузить креативы минимум на два разрешения, добавить подрядчиков из кампании, отправить на модерацию.</li>
+        <li>Проставить ставки и график вещания под утро и вечер, посчитать бюджет с НДС 22% и прогноз.</li>
+        <li>Настроить фотоотчёты так, чтобы фото хватило на отчёт по всем экранам, где они возможны.</li>
+        <li>Пройти пре-флайт из задачи 5 и получить допуск наставника на запуск.</li>
+        <li>Через неделю открутки собрать промежуточный отчёт (через «Рекомендации для клиента») и предложить одну оптимизацию.</li>
+      </ol>
+
+      <div class="note tip">
+        <span class="nl">Что оценивается</span>
+        <p>Не скорость, а полнота проверок и корректность формулировок для клиента. Отдельно — умение сказать «в RTB гарантии выхода нет» и объяснить, чем прогноз отличается от обязательства.</p>
+      </div>
+
+      <div class="opentask" data-k="ot_exam" data-label="Аттестация · сквозной кейс">
+        <p class="q-text">Кратко опишите итоговый результат по всем девяти пунктам задания и приложите ссылки на выгруженные файлы (сводка ТТ, медиаплан, эфирная справка/отчёт).</p>
+        <textarea placeholder="Ваш ответ..."></textarea>
+        <div class="opentask-actions">
+          <button class="copybtn" type="button">Скопировать для куратора</button>
+          <span class="copied-msg" hidden>Скопировано — вставьте куратору в чат/тикет</span>
+        </div>
+      </div>
+
+      <div class="ckbox">
+        <h4 class="lbl">Допуск к самостоятельной работе</h4>
+        <ul class="cklist">
+          <li><label><input type="checkbox" data-k="xa"><span>Все одиннадцать модулей закрыты</span></label></li>
+          <li><label><input type="checkbox" data-k="xb"><span>Все семь рабочих задач выполнены хотя бы один раз с наставником</span></label></li>
+          <li><label><input type="checkbox" data-k="xc"><span>Сквозной кейс сдан</span></label></li>
+          <li><label><input type="checkbox" data-k="xd"><span>Наизусть перечисляю необратимые действия во всех трёх моделях закупки</span></label></li>
+          <li><label><input type="checkbox" data-k="xe"><span>Знаю, по какому поводу и в какой форме обращаться в клиентский сервис</span></label></li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="sep">
+    <p class="footer">
+      Программа собрана из <a href="https://app.weeek.net/s/spravka-dsp-platformy-omni360-document-OTUyMzIxfGExYjZlMGY5LWU5NWUtNGNkMy04YmU3LTNjMTQ1YzE3N2M5ZQ==" target="_blank" rel="noopener">Справки DSP-платформы Omni360</a> (рынок и продукт) и <a href="https://testdsp.omniboard360.io/assets/docs/user-guide/?markup=visible&features=creatives%2Canalytics%2Csummary%2Cdirectories%2Csettings-agencies%2Csettings-customers%2Csettings-brands%2Csettings-users&lang=ru" target="_blank" rel="noopener">Инструкции пользователя OmniDSP</a> (интерфейс, версия от 21.08.2026). Справки — первоисточник: при расхождении верить им, а не этому файлу. Оценки трудоёмкости и сложности задач — ориентировочные, корректируйте под реальный ритм команды.
+    </p>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'omni360-onboarding-v2';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.ckbox input[type=checkbox]'));
+  var blocks = Array.prototype.slice.call(document.querySelectorAll('[data-block]'));
+  var cellsWrap = document.getElementById('cells');
+  var pnum = document.getElementById('pnum');
+
+  // --- build progress cells, one per block ---
+  var cellEls = blocks.map(function(b){
+    var c = document.createElement('div');
+    c.className = 'cell';
+    c.title = (b.querySelector('.mod-title') || b.querySelector('.task-title') || {}).textContent || '';
+    var f = document.createElement('div');
+    f.className = 'fill';
+    c.appendChild(f);
+    cellsWrap.appendChild(c);
+    return c;
+  });
+
+  function load(){
+    var raw;
+    try { raw = window.localStorage.getItem(KEY); } catch(e){ return {}; }
+    if(!raw) return {};
+    try { return JSON.parse(raw) || {}; } catch(e){ return {}; }
+  }
+  function save(state){
+    try { window.localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){}
+  }
+
+  var state = load();
+  boxes.forEach(function(b){ if(state[b.dataset.k]) b.checked = true; });
+
+  function render(){
+    var total = boxes.length, done = 0;
+    boxes.forEach(function(b){ if(b.checked) done++; });
+    pnum.innerHTML = '<b>' + done + '</b> из ' + total + ' отметок';
+
+    blocks.forEach(function(blk, i){
+      var bs = blk.querySelectorAll('.ckbox input[type=checkbox]');
+      var n = bs.length, d = 0;
+      Array.prototype.forEach.call(bs, function(b){ if(b.checked) d++; });
+      var pct = n ? Math.round(d / n * 100) : 0;
+      cellEls[i].querySelector('.fill').style.width = pct + '%';
+      cellEls[i].classList.toggle('done', n > 0 && d === n);
+    });
+  }
+
+  boxes.forEach(function(b){
+    b.addEventListener('change', function(){
+      state[b.dataset.k] = b.checked;
+      if(!b.checked) delete state[b.dataset.k];
+      save(state);
+      render();
+    });
+  });
+
+  document.getElementById('reset').addEventListener('click', function(){
+    boxes.forEach(function(b){ b.checked = false; });
+    document.querySelectorAll('.opentask textarea').forEach(function(t){ t.value = ''; });
+    document.querySelectorAll('.quiz').forEach(function(q){
+      q.classList.remove('answered','ok','no');
+      q.querySelectorAll('input[type=radio]').forEach(function(r){ r.checked = false; });
+    });
+    state = {};
+    save(state);
+    render();
+  });
+
+  render();
+
+  // --- quizzes: instant self-check feedback (not persisted, low value to save) ---
+  document.querySelectorAll('.quiz').forEach(function(q){
+    var radios = q.querySelectorAll('input[type=radio]');
+    var fb = q.querySelector('.q-fb');
+    radios.forEach(function(r){
+      r.addEventListener('change', function(){
+        var correct = r.dataset.correct === 'true';
+        q.classList.remove('ok','no');
+        q.classList.add('answered', correct ? 'ok' : 'no');
+        fb.textContent = correct ? (fb.dataset.ok || 'Верно.') : (fb.dataset.no || 'Неверно, посмотрите ещё раз.');
+      });
+    });
+  });
+
+  // --- open tasks: persist answer text, copy formatted text for curator ---
+  document.querySelectorAll('.opentask').forEach(function(box){
+    var k = box.dataset.k;
+    var t = box.querySelector('textarea');
+    if(state[k]) t.value = state[k];
+    t.addEventListener('input', function(){
+      if(t.value.trim()) state[k] = t.value; else delete state[k];
+      save(state);
+    });
+    var btn = box.querySelector('.copybtn');
+    var msg = box.querySelector('.copied-msg');
+    btn.addEventListener('click', function(){
+      var label = box.dataset.label || '';
+      var q = box.querySelector('.q-text').textContent.trim();
+      var answer = t.value.trim() || '(ответ пуст)';
+      var text = (label ? label + '\n' : '') + 'Вопрос: ' + q + '\nОтвет: ' + answer;
+      function shown(){
+        msg.hidden = false;
+        setTimeout(function(){ msg.hidden = true; }, 3000);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(shown).catch(function(){
+          msg.textContent = 'Не удалось скопировать — выделите текст вручную.';
+          shown();
+        });
+      } else {
+        msg.textContent = 'Копирование недоступно в этом браузере — выделите текст вручную.';
+        shown();
+      }
+    });
+  });
+
+  // --- scrollspy on the rail ---
+  var links = Array.prototype.slice.call(document.querySelectorAll('#rail a'));
+  var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+
+  if ('IntersectionObserver' in window) {
+    var visible = {};
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+      var bestId = null, best = -1;
+      sections.forEach(function(s){
+        var v = visible[s.id] || 0;
+        if(v > best){ best = v; bestId = s.id; }
+      });
+      links.forEach(function(a){
+        a.classList.toggle('active', a.getAttribute('href') === '#' + bestId);
+      });
+    }, { rootMargin: '-60px 0px -55% 0px', threshold: [0, 0.15, 0.4, 0.75, 1] });
+    sections.forEach(function(s){ io.observe(s); });
+  }
+})();
+</script>
