@@ -13,7 +13,10 @@
     ot_m1: { text: 'DOOH дополняет интернет-рекламу охватом в общественных местах, ОРД не нужен, потому что DOOH не подпадает под закон о маркировке интернет-рекламы.', submittedAt: new Date().toISOString() },
   };
   var demoFeedback = {};
-  var demoQuizzes = { 'q_m1_1+q_m1_2+q_m1_3+q_m1_4+q_m1_5': { passed: true, attempts: 2, everWrong: { q_m1_1: true } } };
+  var demoQuizzes = {
+    'q_m1_6': { passed: true, attempts: 1, everWrong: {} },
+    'q_m1_1+q_m1_2+q_m1_3+q_m1_4+q_m1_5': { passed: true, attempts: 2, everWrong: { q_m1_1: true } },
+  };
 
   var realFetch = window.fetch.bind(window);
   window.fetch = function (url, opts) {
