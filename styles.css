@@ -109,11 +109,19 @@ a{color:var(--accent);}
 .q-opts{display:grid; gap:7px; margin-bottom:2px; padding-left:0; list-style:none;}
 .q-opts label{display:flex; gap:9px; align-items:flex-start; cursor:pointer; font-size:14.2px; line-height:1.4; margin-bottom:0;}
 .q-opts input[type=radio]{margin:3px 0 0; accent-color:var(--accent); cursor:pointer; flex:0 0 auto;}
-.q-fb{display:none; font-size:13.6px; border-radius:8px; padding:9px 12px; margin:10px 0 0;}
-.quiz.answered .q-fb{display:block;}
-.quiz.ok .q-fb{background:var(--good-bg); color:var(--good);}
-.quiz.no .q-fb{background:var(--bad-bg); color:var(--bad);}
-.quiz.answered .q-opts{pointer-events:none; opacity:.8;}
+.q-fb{display:none;}
+
+/* ---------- quiz block: several .quiz questions checked together ---------- */
+.quizblock{display:grid; gap:10px;}
+.quizblock .quiz + .quiz{margin-top:0;}
+.quiz{transition:box-shadow .15s, background .15s;}
+.quiz.wrong{box-shadow:0 0 0 2px var(--bad) inset; background:var(--bad-bg);}
+.quiz.right{box-shadow:0 0 0 2px var(--good) inset;}
+.qb-footer{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:4px;}
+.qb-score{font-size:13.6px; font-weight:600;}
+.qb-score.ok{color:var(--good);}
+.qb-score.warn{color:var(--bad);}
+.rail-done{color:var(--good);}
 
 .opentask{background:var(--surface-2); border-radius:10px; padding:14px 16px;}
 .opentask .q-text{font-weight:600; margin:0 0 4px; font-size:14.6px;}

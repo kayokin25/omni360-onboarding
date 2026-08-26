@@ -352,26 +352,50 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">1. Клиент просит запустить кампанию по ставке «по OTS» и получить полную OTS-отчётность. В подобранной адресной программе половина экранов — indoor. Что делать?</p>
+        <p class="q-text">Клиент просит запустить кампанию по ставке «по OTS» и получить полную OTS-отчётность. В подобранной адресной программе половина экранов — indoor. Что делать?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m1_1"> Оставить всё как есть — indoor тоже покажет OTS, просто с задержкой</label></li>
           <li><label><input type="radio" name="q_m1_1" data-correct="true"> Убрать indoor-экраны из АП или предупредить клиента, что по ним OTS не будет</label></li>
           <li><label><input type="radio" name="q_m1_1"> Переключить тип ставки на «по выходам» без разговора с клиентом</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно: indoor не передаёт OTS в принципе, это не вопрос задержки." data-no="Неверно: indoor не передаёт OTS вообще, а не с задержкой — вопрос конструктивный, а не технический."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Экран стоит на фасаде ТЦ — это outdoor. Точно такой же по конструкции экран, но в фойе того же ТЦ, — это...</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m1_2" data-correct="true"> Indoor — потому что он внутри помещения, здание тут ни при чём</label></li>
+          <li><label><input type="radio" name="q_m1_2"> Тоже outdoor, раз здание одно и то же</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Какой outdoor-формат — самый дешёвый и ловит пешеходов на уровне глаз?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m1_3" data-correct="true"> Сити-формат (CF)</label></li>
+          <li><label><input type="radio" name="q_m1_3"> Медиафасад (MF)</label></li>
+          <li><label><input type="radio" name="q_m1_3"> Суперсайт (SS)</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Indoor-код <code class="tag">CITY_FORMAT_WD</code> — это экраны...</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m1_4"> На вокзалах и станциях МЦК</label></li>
+          <li><label><input type="radio" name="q_m1_4" data-correct="true"> В павильонах метро</label></li>
+          <li><label><input type="radio" name="q_m1_4"> В пунктах выдачи Wildberries</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Почему в DOOH не нужна маркировка ОРД?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m1_5" data-correct="true"> DOOH не подпадает под закон о маркировке интернет-рекламы</label></li>
+          <li><label><input type="radio" name="q_m1_5"> ОРД нужен только для зарубежных операторов</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m1" data-label="Модуль М1 · DOOH и Omni360">
         <p class="q-text">Объясните в 2–3 предложениях клиенту, зачем DOOH нужен вместе с интернет-рекламой, и почему в DOOH не требуется маркировка ОРД.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
-
-      <div class="opentask" data-k="cq_m1" data-label="Модуль М1 · Самопроверка">
-        <p class="q-text">Своими словами: в чём разница outdoor и indoor на примере пары похожих экранов (например, на фасаде ТЦ и в его фойе); какие есть пять outdoor-форматов и кого каждый ловит; что означает каждый indoor-код — OTHER, CITY_FORMAT_RD/RC/WD, PVZ_SCREEN, MOBILE; и почему в DOOH не нужен ОРД.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -429,26 +453,41 @@
       </ul>
 
       <div class="quiz">
-        <p class="q-text">2. Вам нужно посмотреть агрегированные показатели сразу по нескольким РК и проверить права нового пользователя. В каких разделах навигации это делается?</p>
+        <p class="q-text">Вам нужно посмотреть агрегированные показатели сразу по нескольким РК и проверить права нового пользователя. В каких разделах навигации это делается?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m2_1" data-correct="true"> Агрегированные показатели — в «Сводке», права пользователя — в «Справочниках»</label></li>
           <li><label><input type="radio" name="q_m2_1"> И то и другое — внутри самой кампании в «Кампаниях»</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно: «Сводка» — это мониторинг и агрегаты по РК, «Справочники» — рекламодатели, бренды и пользователи с их правами." data-no="Неверно: агрегаты по нескольким РК считает «Сводка», а права пользователей выдаются в «Справочниках», не внутри отдельной кампании."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Кампания в статусе «Отклонена». К какой группе фильтра она относится?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m2_2"> Ошибки</label></li>
+          <li><label><input type="radio" name="q_m2_2" data-correct="true"> Остановлены</label></li>
+          <li><label><input type="radio" name="q_m2_2"> Завершённые</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Кампания работает, вам нужно временно приостановить показы и потом вернуться к ней с правками. Какая кнопка?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m2_3"> Отменить</label></li>
+          <li><label><input type="radio" name="q_m2_3" data-correct="true"> Остановить</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Переключатель ⇄ в колонке бюджета кампании меняет вид между...</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m2_4" data-correct="true"> Бюджетом клиента и бюджетом баера</label></li>
+          <li><label><input type="radio" name="q_m2_4"> Суммой с НДС и без НДС</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m2" data-label="Модуль М2 · Кабинет OmniDSP">
         <p class="q-text">По брифу клиента, которому нужен доступ «только смотреть статистику, без бюджетов и создания кампаний», опишите, какую роль вы бы выдали и почему. Проверьте предположение на тестовом пользователе и опишите, что он реально увидел.</p>
         <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
-
-      <div class="opentask" data-k="cq_m2" data-label="Модуль М2 · Самопроверка">
-        <p class="q-text">Опишите: пять пунктов левого меню кабинета и зачем нужен каждый; что нашли, открыв «Справочники»; шесть групп статусов кампаний и что в них входит; в чём разница «Остановить» и «Отменить»; и что показывает переключатель ⇄, как считается НДС 22%.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -492,25 +531,32 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">3. Клиент хочет тестировать разные креативы в первую неделю и оперативно менять ставки. Какая модель подходит?</p>
+        <p class="q-text">Клиент хочет тестировать разные креативы и оперативно менять ставки по ходу кампании. Какая модель подходит?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m3_1" data-correct="true"> RTB — только там доступны правки на ходу</label></li>
           <li><label><input type="radio" name="q_m3_1"> АГ — цена фиксируется один раз при отправке на модерацию</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: в АГ условия фиксируются при отправке на модерацию, тестировать на ходу там нельзя."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">В какой из трёх моделей есть real-time таргетинг?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m3_2" data-correct="true"> Только в RTB</label></li>
+          <li><label><input type="radio" name="q_m3_2"> В RTB и в ПГ</label></li>
+          <li><label><input type="radio" name="q_m3_2"> Во всех трёх</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Где в интерфейсе создаётся АГ?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m3_3"> В той же общей форме создания РК, что и RTB</label></li>
+          <li><label><input type="radio" name="q_m3_3" data-correct="true"> В отдельной форме: Основные параметры → Экраны → Стоимость → Итоги</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m3" data-label="Модуль М3 · Модели закупки">
         <p class="q-text">По трём учебным брифам (получите у руководителя) выберите модель закупки для каждого и обоснуйте выбор в 1–2 предложениях на бриф.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
-
-      <div class="opentask" data-k="cq_m3" data-label="Модуль М3 · Самопроверка">
-        <p class="q-text">По памяти: чем RTB, ПГ и АГ отличаются по гарантии, возможности правок и таргетингу; где в интерфейсе создаётся каждая. Затем — по трём учебным брифам, какую модель выбрали для каждого и почему, и как прошла защита выбора перед руководителем.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -561,26 +607,32 @@
       <p>Справочники → Пользователи → добавление учётной записи: почта — логин, пароль задаётся вручную и сохраняется, чтобы передать клиенту. Клиенту передаём следующие данные: ссылку на вход, логин, пароль, инструкцию по платформе.</p>
 
       <div class="quiz">
-        <p class="q-text">4. У рекламодателя месячный лимит указан как 0. Что это значит?</p>
+        <p class="q-text">У рекламодателя месячный лимит указан как 0. Что это значит?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m4_1"> Рекламодатель не может создавать кампании вообще</label></li>
           <li><label><input type="radio" name="q_m4_1" data-correct="true"> Личного лимита нет — действует общий лимит агентства</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: 0 = нет персонального ограничения, но лимит агентства всё равно действует."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">У нового рекламодателя надбавка не заполнена. Что нужно сделать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m4_2"> Оставить поле пустым — так система поймёт, что надбавки нет</label></li>
+          <li><label><input type="radio" name="q_m4_2" data-correct="true"> Ничего — поле обязательное и уже стоит 0% по умолчанию</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">В записи креатива указан конкретный бренд. К чему это приведёт?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m4_3" data-correct="true"> Запись привяжется только к кампаниям этого бренда</label></li>
+          <li><label><input type="radio" name="q_m4_3"> Ни на что не повлияет, бренд — просто пометка для поиска</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m4" data-label="Модуль М4 · Справочники">
         <p class="q-text">Заведите тестового рекламодателя с надбавкой и месячным лимитом, создайте два бренда, выдайте доступ тестовому пользователю. Опишите, что пользователь увидел под своей ролью.</p>
         <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
-
-      <div class="opentask" data-k="cq_m4" data-label="Модуль М4 · Самопроверка">
-        <p class="q-text">Опишите: с какой надбавкой и месячным лимитом завели тестового рекламодателя; зачем создали два отдельных бренда; что реально увидел тестовый пользователь со своей ролью; и в чём разница между надбавкой 0% и лимитом 0.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -633,26 +685,32 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">5. В PDF-файле от оператора указана длительность ролика 15 секунд, а в таблице выбора экранов у нужного слота — 10 секунд. Какую длительность закладывать в ТЗ дизайнеру?</p>
+        <p class="q-text">В PDF-файле от оператора указана длительность ролика 15 секунд, а в таблице выбора экранов у нужного слота — 10 секунд. Какую длительность закладывать в ТЗ дизайнеру?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m5_1"> 15 секунд — это официальный документ оператора</label></li>
           <li><label><input type="radio" name="q_m5_1" data-correct="true"> 10 секунд — хронометраж берём из системы, а не из общего PDF оператора</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: PDF оператора часто написан сразу под несколько закупочных моделей и может содержать лишние варианты длительности."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Кнопка ТТ у экрана неактивна. Что делать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m5_2"> Подставить требования по похожему экрану того же оператора</label></li>
+          <li><label><input type="radio" name="q_m5_2" data-correct="true"> Проверить инструмент «Сбор технических требований», а если и там пусто — эскалировать тому, кто ведёт отношения с оператором</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">У оператора РИМ разрешение в присланном PDF не совпадает с тем, что показывает система. Чему верить?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m5_3" data-correct="true"> Системе — она и не даст загрузить креатив с несуществующим разрешением</label></li>
+          <li><label><input type="radio" name="q_m5_3"> PDF — это официальный документ от оператора</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m5" data-label="Модуль М5 · ТТ и длительности слотов">
         <p class="q-text">Найдите в учебной адресной программе экран с несколькими доступными длительностями слота и опишите, как вы определите нужную для конкретного размещения.</p>
         <p class="q-hint">Практическое задание — выполняется в тестовом кабинете.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
-
-      <div class="opentask" data-k="cq_m5" data-label="Модуль М5 · Самопроверка">
-        <p class="q-text">Опишите: что вы выгрузили по учебной АП (техтребования через PDF/Excel и ТТ отдельного экрана); какие экраны нашли с несколькими доступными длительностями слота; почему длительность из PDF оператора может не совпадать с длительностью слота в системе; и что делать при неактивной кнопке ТТ.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -713,13 +771,28 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">6. Бюджет клиента без НДС — 200 000 ₽. Сколько составит итоговая сумма с НДС 22%?</p>
+        <p class="q-text">Бюджет клиента без НДС — 200 000 ₽. Сколько составит итоговая сумма с НДС 22%?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m6_1"> 222 000 ₽</label></li>
           <li><label><input type="radio" name="q_m6_1" data-correct="true"> 244 000 ₽</label></li>
           <li><label><input type="radio" name="q_m6_1"> 200 000 ₽, НДС уже включён в ставки</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно: 200 000 + 22% = 244 000 ₽." data-no="Неверно: 200 000 × 1.22 = 244 000 ₽, а ставки и бюджет клиента указываются без НДС."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Клиент просит собрать АП вокруг сети своих 40 точек, для которых у вас есть только адреса. Каким инструментом подбора удобнее всего воспользоваться?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m6_2"> Автоподбор по бюджету</label></li>
+          <li><label><input type="radio" name="q_m6_2" data-correct="true"> Поиск мест — вкладка «Адрес/координаты»</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Вы задали дневной лимит показов. Что он делает?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m6_3"> Увеличивает общий бюджет кампании</label></li>
+          <li><label><input type="radio" name="q_m6_3" data-correct="true"> Ограничивает темп открутки в течение дня, не трогая общий бюджет</label></li>
+        </ul>
       </div>
 
       <h4 class="lbl">Самостоятельная сборка МП: инструмент «Планировщик»</h4>
@@ -735,14 +808,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m6" data-label="Модуль М6 · Самопроверка">
-        <p class="q-text">Опишите: какими минимум тремя инструментами подбора собрали АП, включая «Поиск мест» с радиусом и «Аудитории»; как проставили ставки массово и точечно; как настроили график вещания и как изменился прогноз; как посчитаете бюджет клиента с НДС 22% в уме; как прошла защита медиаплана перед руководителем; и чем черновой план из Планировщика отличался от того, что получилось в кампании.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
   </section>
 
@@ -796,12 +861,35 @@
       <p>Отдельный файл обычно удаляется только в статусе «Новый». Возможность удалить всю запись зависит от того, привязана ли она к бренду и кампаниям — перед удалением проверяйте связи в карточке.</p>
 
       <div class="quiz">
-        <p class="q-text">7. В записи первым загружен статичный файл 5 секунд. Позже нужно добавить видеоролик 10 секунд для тех же операторов. Что произойдёт, если просто добавить его в ту же запись?</p>
+        <p class="q-text">В записи первым загружен статичный файл 5 секунд. Позже нужно добавить видеоролик 10 секунд для тех же операторов. Что произойдёт, если просто добавить его в ту же запись?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m7_1"> Кампании начнут корректно использовать оба варианта по ситуации</label></li>
           <li><label><input type="radio" name="q_m7_1" data-correct="true"> Кампании всё равно будут ориентироваться на тип и длительность первого файла — нужна отдельная запись</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: тип и длительность записи фиксируются первым загруженным файлом."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">У записи указан регион. Как это скажется на её использовании?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m7_2"> Запись вообще нельзя привязать к кампаниям вне этого региона</label></li>
+          <li><label><input type="radio" name="q_m7_2" data-correct="true"> Привязать можно к любой кампании, но крутиться креатив будет только в этом регионе</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Файл отклонили, вы загрузили исправленную версию того же разрешения в ту же запись. Что произойдёт?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m7_3" data-correct="true"> Новый файл станет версией v2 в том же слоте, история отклонения останется видна</label></li>
+          <li><label><input type="radio" name="q_m7_3"> Новый файл появится отдельной, никак не связанной строкой</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Зачем нужен SSP ID?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m7_4" data-correct="true"> Искать запись и вести переписку с оператором о конкретном файле</label></li>
+          <li><label><input type="radio" name="q_m7_4"> Это внутренний номер, который нигде не используется</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m7" data-label="Модуль М7 · Креативы">
@@ -814,14 +902,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m7" data-label="Модуль М7 · Самопроверка">
-        <p class="q-text">Опишите: как создали запись с несколькими файлами разных разрешений под разных операторов; как добавили подрядчиков обоими способами и когда какой удобнее; что увидели у подрядчика без подходящего файла; как провели креатив через модерацию до «Согласован» и обработали хотя бы одно отклонение; и что такое SSP ID и зачем он нужен.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
 
     <!-- M8 -->
@@ -865,12 +945,27 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">8. На макете указано название ЖК и застройщик, есть ссылка на проектную декларацию. Модель фото людей на макете нет. Какой документ, скорее всего, не понадобится?</p>
+        <p class="q-text">На макете указано название ЖК и застройщик, есть ссылка на проектную декларацию. Фото людей на макете нет. Какой документ, скорее всего, не понадобится?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m8_1"> Согласие на использование ТЗ, если на макете чужой логотип</label></li>
           <li><label><input type="radio" name="q_m8_1" data-correct="true"> Заверение на физлицо</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно: заверение на физлицо нужно только когда на макете есть люди." data-no="Неверно: заверение на физлицо требуется для изображений людей, а не для недвижимости."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">На макете товарный знак написан латиницей. Что обычно нужно дополнительно?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m8_2" data-correct="true"> Свидетельство о регистрации ТЗ</label></li>
+          <li><label><input type="radio" name="q_m8_2"> Ничего, если знак уже используется на макете</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Ролик уже согласован в барабане у оператора. Вы отправляете его же на программатик у того же оператора. Что произойдёт?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m8_3"> Автоматически получит статус «Согласован», раз уже одобрен</label></li>
+          <li><label><input type="radio" name="q_m8_3" data-correct="true"> Пройдёт модерацию заново — за неё обычно отвечает другой отдел</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m8" data-label="Модуль М8 · Сопроводительные документы">
@@ -882,14 +977,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m8" data-label="Модуль М8 · Самопроверка">
-        <p class="q-text">Без подглядывания в таблицу: какой документ нужен для макета с человеком, с чужим товарным знаком и с недвижимостью; у кого уточняете актуальный адрес/шаблон для отправки документов оператору; почему согласование в барабане не переносится автоматически на программатик у того же оператора; и в чём риск ссылки на согласование в другой закупочной модели.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
   </section>
 
@@ -935,12 +1022,27 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">9. Кампания была запущена, потом остановлена на паузу для правок. Можно ли поменять тип ставки с «по выходам» на «по OTS»?</p>
+        <p class="q-text">Кампания была запущена, потом остановлена на паузу для правок. Можно ли поменять тип ставки с «по выходам» на «по OTS»?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m9_1"> Да, пока кампания не в статусе «Активна»</label></li>
           <li><label><input type="radio" name="q_m9_1" data-correct="true"> Нет — раз кампания хоть раз запускалась, тип ставки заблокирован навсегда</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: блокировка типа ставки и надбавки наступает после первого запуска и не снимается паузой."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Вы внесли правки в остановленную кампанию и сохранили их. Кампания снова начнёт откручиваться?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m9_2"> Да, сохранение автоматически возобновляет показы</label></li>
+          <li><label><input type="radio" name="q_m9_2" data-correct="true"> Нет, кампанию нужно запустить заново отдельным действием</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Помощник «Создать по брифу AI» не смог однозначно понять, какой бюджет вы имели в виду. Что он должен сделать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m9_3" data-correct="true"> Предупредить и запросить решение, а не подставить значение сам</label></li>
+          <li><label><input type="radio" name="q_m9_3"> Тихо подставить наиболее вероятное значение</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m9" data-label="Модуль М9 · Сборка RTB-кампании">
@@ -953,14 +1055,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m9" data-label="Модуль М9 · Самопроверка">
-        <p class="q-text">Опишите: как собрали учебную РК по всем шагам формы; попробовали ли «Спланировать по параметрам» или AI-бриф и чем это отличалось от ручного способа; что нашли в «Сводке», проверяя статусы согласования креативов; как отредактировали остановленную кампанию и запустили её обратно; и какие два параметра блокируются после первого запуска.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
 
     <!-- M10 -->
@@ -996,12 +1090,27 @@
       </ul>
 
       <div class="quiz">
-        <p class="q-text">10. Клиенту нужен полный Excel со статистикой показов за весь период кампании, а в таблице сейчас включён фильтр по последней неделе. Что произойдёт при экспорте прямо сейчас?</p>
+        <p class="q-text">Клиенту нужен полный Excel со статистикой показов за весь период кампании, а в таблице сейчас включён фильтр по последней неделе. Что произойдёт при экспорте прямо сейчас?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m10_1"> Экспортируется весь период — фильтр влияет только на экран</label></li>
           <li><label><input type="radio" name="q_m10_1" data-correct="true"> Экспортируется только отфильтрованная неделя — фильтр учитывается при выгрузке</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: экспорт статистики забирает только отфильтрованные данные и видимые колонки — фильтры нужно снять до выгрузки."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Клиент просит публичную ссылку с подборкой фото с экранов. Какой инструмент нужен?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m10_2"> Экспорт → Эфирная справка</label></li>
+          <li><label><input type="radio" name="q_m10_2" data-correct="true"> Кнопка «Сформировать отчёт»</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">В фильтре графиков отмечены только текущие (активные) записи креативов, а по кампании креативы менялись. Что произойдёт?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m10_3" data-correct="true"> Часть истории по прежним креативам не попадёт в выборку</label></li>
+          <li><label><input type="radio" name="q_m10_3"> Ничего, фильтр по креативам не влияет на графики</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m10" data-label="Модуль М10 · Статистика и отчёты">
@@ -1014,14 +1123,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m10" data-label="Модуль М10 · Самопроверка">
-        <p class="q-text">Опишите: чем отличаются эфирная справка общая и по дням; как отфильтровали и выгрузили статистику только с нужными колонками; какие отклонённые выходы и причины нашли во вкладке «Показы»; что показали графики по дням и по часам; чем «Сформировать отчёт» отличается от эфирной справки; и как выбрали фото вручную и выгрузили архив ZIP.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
 
     <!-- M11 -->
@@ -1054,12 +1155,27 @@
       </div>
 
       <div class="quiz">
-        <p class="q-text">11. В шаге «Стоимость» формы АГ вы уже указали скидку 10%. Можно ли дополнительно вписать в поле «Предложить цену» свою сумму?</p>
+        <p class="q-text">В шаге «Стоимость» формы АГ вы уже указали скидку 10%. Можно ли дополнительно вписать в поле «Предложить цену» свою сумму?</p>
         <ul class="q-opts">
           <li><label><input type="radio" name="q_m11_1"> Да, система применит меньшую из двух</label></li>
           <li><label><input type="radio" name="q_m11_1" data-correct="true"> Нет — поля взаимоисключающие, заполнение одного очищает другое</label></li>
         </ul>
-        <p class="q-fb" data-ok="Верно." data-no="Неверно: скидка и предложенная цена не суммируются и не сравниваются — это одно из двух полей."></p>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Клиент хочет отменить уже согласованное АГ-размещение. Достаточно ли нажать одну кнопку в интерфейсе?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m11_2"> Да, отмена работает как в RTB</label></li>
+          <li><label><input type="radio" name="q_m11_2" data-correct="true"> Нет, обычно нужна отдельная договорённость с оператором</label></li>
+        </ul>
+      </div>
+
+      <div class="quiz">
+        <p class="q-text">Где создаётся ПГ-кампания?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_m11_3" data-correct="true"> В той же общей форме создания РК, что и RTB, с типом «Прог. гарантид»</label></li>
+          <li><label><input type="radio" name="q_m11_3"> В отдельной форме, как и АГ</label></li>
+        </ul>
       </div>
 
       <div class="opentask" data-k="ot_m11" data-label="Модуль М11 · Гарантиды">
@@ -1072,14 +1188,6 @@
         </div>
       </div>
 
-      <div class="opentask" data-k="cq_m11" data-label="Модуль М11 · Самопроверка">
-        <p class="q-text">Опишите: как собрали учебную АГ-кампанию до шага «Итоги» и что сверили по каждому экрану (GID, прайс, бюджет); почему скидка и предложенная цена — взаимоисключающие поля; как собрали учебную ПГ-кампанию с типом «Прог. гарантид»; и как объясните клиенту, почему отмена гарантированного размещения требует согласования с оператором.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
-      </div>
     </article>
   </section>
 
@@ -1127,17 +1235,16 @@
         <p>Взять длительность из общего PDF оператора. Отдать дизайнеру файл оператора «как есть», без сводки разрешений. Не заметить неактивную кнопку ТТ и уйти в работу с неактуальными требованиями.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t1" data-label="Задача Т1 · Подготовка ТТ">
-        <p class="q-text">Приложите сводку ТТ по учебной АП из трёх форматов и минимум двух операторов и опишите, что было нестандартным.</p>
-        <textarea placeholder="Ссылка на файл / краткое описание сводки..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">Откуда брать хронометраж для сводки ТТ?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t1_1"> Из PDF, который прислал оператор</label></li>
+          <li><label><input type="radio" name="q_t1_1" data-correct="true"> Из колонки длительности в таблице выбора экранов</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t1" data-label="Задача Т1 · Итог">
-        <p class="q-text">Опишите сводку ТТ, которую вы сделали по учебной АП (три формата, два оператора), и что сказал руководитель, проверив её.</p>
+      <div class="opentask" data-k="ot_t1" data-label="Задача Т1 · Подготовка ТТ">
+        <p class="q-text">Приложите сводку ТТ по учебной АП из трёх форматов и минимум двух операторов, опишите, что было нестандартным, и что сказал руководитель, проверив её.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1183,17 +1290,16 @@
         <p>Собрать красивую АП и забыть про суточные лимиты — бюджет выгорит за первые дни. Перепутать сумму с НДС и без НДС при защите бюджета перед клиентом. Поставить прайм-тайм и не пересчитать прогноз.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t2" data-label="Задача Т2 · Подготовка медиапланов">
-        <p class="q-text">Опишите два собранных медиаплана по разным брифам (один по выходам, один по OTS): какими инструментами собирали АП и почему выбрали такие ставки.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">Медиаплан собран без суточного лимита показов. Чем это грозит?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t2_1" data-correct="true"> Бюджет может выгореть за первые же дни кампании</label></li>
+          <li><label><input type="radio" name="q_t2_1"> Ничем — суточный лимит влияет только на отчётность</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t2" data-label="Задача Т2 · Итог">
-        <p class="q-text">Опишите два собранных медиаплана (один по выходам, один по OTS): какие ставки и график выбрали, как обосновали перед руководителем, и что изменилось, когда пересобрали план после правки бюджета клиента вдвое.</p>
+      <div class="opentask" data-k="ot_t2" data-label="Задача Т2 · Подготовка медиапланов">
+        <p class="q-text">Опишите два собранных медиаплана по разным брифам (один по выходам, один по OTS): какими инструментами собирали АП, почему выбрали такие ставки и график, как обосновали перед руководителем. Отдельно опишите, что изменилось, когда пересобрали один из планов после правки бюджета клиента вдвое.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1245,17 +1351,16 @@
         <p>Написать «креатив отклонили, что делать» без SSP ID. Пообещать клиенту срок ответа оператора, не заложив выходные и загрузку очереди модерации. Ссылаться на согласование в другой закупочной модели без предупреждения о риске.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t3" data-label="Задача Т3 · Коммуникация с операторами">
-        <p class="q-text">Оформите по шаблону три реальных или учебных запроса и приложите, довели ли хотя бы один до ответа оператора.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">В запросе оператору вы не указали SSP ID/GID/номер РК. Чем это грозит?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t3_1" data-correct="true"> Оператор не сможет быстро найти объект, ответ задержится</label></li>
+          <li><label><input type="radio" name="q_t3_1"> Ничем — оператор всегда найдёт нужный файл по описанию</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t3" data-label="Задача Т3 · Итог">
-        <p class="q-text">Приведите три оформленных по шаблону запроса оператору и опишите, по каким из них уже получили ответ (в частности — по ТТ и по отклонённому креативу), и что уточнили по актуальному порядку отправки документов хотя бы одному оператору.</p>
+      <div class="opentask" data-k="ot_t3" data-label="Задача Т3 · Коммуникация с операторами">
+        <p class="q-text">Оформите по шаблону три реальных или учебных запроса оператору и приложите их. Опишите, по каким из них уже получили ответ (в частности — по ТТ и по отклонённому креативу), и что уточнили по актуальному порядку отправки документов хотя бы одному оператору.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1300,17 +1405,16 @@
         <p>Указать бренд в записи и потом не найти её при привязке к другой кампании. Добавить файл другого хронометража в существующую запись вместо создания новой. Отправить на модерацию в пятницу под понедельничный старт. Пытаться удалить файл, который уже на модерации.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t4" data-label="Задача Т4 · Загрузка и согласование креативов">
-        <p class="q-text">Опишите, как провели запись через модерацию у двух операторов, и как отработали хотя бы одно отклонение (если оно было).</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">Нужно добавить в кампанию видеоролик 15 секунд, а в записи уже есть статичный файл 5 секунд. Как правильно поступить?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t4_1"> Догрузить видео в ту же запись</label></li>
+          <li><label><input type="radio" name="q_t4_1" data-correct="true"> Создать отдельную запись под новый хронометраж</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t4" data-label="Задача Т4 · Итог">
-        <p class="q-text">Опишите, как провели запись с несколькими разрешениями через модерацию у двух операторов, как отработали реальное отклонение до статуса «Согласован», и какой комплект документов собрали и отправили под макет с изображением человека.</p>
+      <div class="opentask" data-k="ot_t4" data-label="Задача Т4 · Загрузка и согласование креативов">
+        <p class="q-text">Опишите, как провели запись с несколькими разрешениями через модерацию у двух операторов, как отработали хотя бы одно отклонение (если оно было) до статуса «Согласован», и какой комплект документов собрали и отправили под макет с изображением человека.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1360,18 +1464,25 @@
         <p>Кампанию можно запустить заранее: показы всё равно начнутся в дату начала и по графику вещания. Это безопаснее, чем запускать в 9 утра в день старта.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t5" data-label="Задача Т5 · Настройка кампаний перед запуском">
-        <p class="q-text">Пройдите пре-флайт по чужой (учебной) кампании, найдите минимум две ошибки и опишите их. Затем запустите свою кампанию под руководителем и подтвердите статус «Активна».</p>
-        <p class="q-hint">Практическое задание — выполняется под наблюдением руководителя.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">В каких из трёх моделей закупки отмена уже согласованного/запущенного размещения не откатывается назад?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t5_1"> Только в RTB</label></li>
+          <li><label><input type="radio" name="q_t5_1" data-correct="true"> Во всех трёх — просто необратимое действие в каждой своё</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t5" data-label="Задача Т5 · Итог">
-        <p class="q-text">Опишите минимум две ошибки, которые нашли на пре-флайте чужой кампании; как запустили свою кампанию под руководителем и убедились в статусе «Активна»; какую правку внесли в активную РК и как вернули её в работу; и перечислите необратимые действия во всех трёх моделях закупки.</p>
+      <div class="quiz">
+        <p class="q-text">После правок в активной RTB-кампании вы сохранили изменения. Кампания продолжает откручиваться?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t5_2"> Да, сохранение и есть запуск</label></li>
+          <li><label><input type="radio" name="q_t5_2" data-correct="true"> Нет, если перед этим её останавливали — нужно запустить заново отдельно</label></li>
+        </ul>
+      </div>
+
+      <div class="opentask" data-k="ot_t5" data-label="Задача Т5 · Настройка кампаний перед запуском">
+        <p class="q-text">Пройдите пре-флайт по чужой (учебной) кампании, найдите минимум две ошибки и опишите их. Затем запустите свою кампанию под руководителем, подтвердите статус «Активна», внесите в неё правку и опишите, как вернули её в работу.</p>
+        <p class="q-hint">Практическое задание — выполняется под наблюдением руководителя.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1425,17 +1536,24 @@
         <p>Обычный график съёмки — часть договорённостей с подрядчиком и в него заложен. А вот повторный выезд на те же адреса или съёмка в узком нестандартном окне времени (когда фотографу нужно успеть строго в конкретный час) — это отдельная платная услуга, подрядчик считает её за адрес. Прежде чем обещать клиенту точную дату повторной съёмки, уточните у подрядчика стоимость.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t6" data-label="Задача Т6 · Фотоотчёты">
-        <p class="q-text">Настройте фотоотчёты на учебной кампании, отберите фото вручную и сформируйте публичную ссылку для клиента. Опишите разницу между этой ссылкой и архивом ZIP.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">Через 40 дней после открутки клиент просит фото с экранов, которые дошли до системы Omni360. Успеете достать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t6_1"> Да, срок хранения не ограничен</label></li>
+          <li><label><input type="radio" name="q_t6_1" data-correct="true"> Нет — на серверах Omni360 фото хранится 30 дней</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t6" data-label="Задача Т6 · Итог">
-        <p class="q-text">Опишите: как настроили фотоотчёты при создании кампании и в чём разница режимов «За кампанию» / «Ежедневно»; как отобрали фото вручную; как сформировали публичную ссылку клиенту и отдельно выгрузили ZIP; и как устроен заказ выезда фотографа у подрядчика, и когда повторный выезд платный.</p>
+      <div class="quiz">
+        <p class="q-text">Подрядчик уже едет к экрану без фотоловушки, но вы узнали, что размещение ещё не стартовало. Что делать?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t6_2" data-correct="true"> Сразу предупредить подрядчика и отменить выезд по этому адресу</label></li>
+          <li><label><input type="radio" name="q_t6_2"> Ничего, выезд уже оплачен по графику</label></li>
+        </ul>
+      </div>
+
+      <div class="opentask" data-k="ot_t6" data-label="Задача Т6 · Фотоотчёты">
+        <p class="q-text">Настройте фотоотчёты на учебной кампании (укажите режим «За кампанию» или «Ежедневно»), отберите фото вручную и сформируйте публичную ссылку для клиента. Опишите разницу между этой ссылкой и архивом ZIP.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>
@@ -1484,17 +1602,24 @@
         <p>Считать все строки статистики показами — там есть и отклонённые выходы. Выгрузить Excel, забыв про включённый фильтр по дате, и отдать клиенту неполные данные.</p>
       </div>
 
-      <div class="opentask" data-k="ot_t7" data-label="Задача Т7 · Анализ кампаний">
-        <p class="q-text">Разберите завершённую или идущую учебную кампанию: назовите причины недолива (если есть) и предложите одну обоснованную оптимизацию. Используйте «Рекомендации для клиента» как основу отчёта.</p>
-        <textarea placeholder="Ваш ответ..."></textarea>
-        <div class="opentask-actions">
-          <button class="copybtn" type="button">Скопировать для руководителя</button>
-          <span class="copied-msg" hidden>Скопировано — вставьте руководителю в чат/тикет</span>
-        </div>
+      <div class="quiz">
+        <p class="q-text">В таблице статистики много строк с отклонёнными выходами. Можно ли считать все строки успешными показами?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t7_1"> Да, все строки — это показы</label></li>
+          <li><label><input type="radio" name="q_t7_1" data-correct="true"> Нет, отклонённые выходы — не показы, их нужно исключить</label></li>
+        </ul>
       </div>
 
-      <div class="opentask" data-k="cq_t7" data-label="Задача Т7 · Итог">
-        <p class="q-text">Разберите завершённую кампанию: назовите причины недолива, если они были. Предложите и обоснуйте одну оптимизацию для идущей кампании. Опишите, что вошло в полный отчёт клиенту: эфирная справка, статистика, фотоотчёты.</p>
+      <div class="quiz">
+        <p class="q-text">Во время кампании креатив меняли, а в фильтре статистики отмечены только текущие (активные) записи. Что увидите в выгрузке?</p>
+        <ul class="q-opts">
+          <li><label><input type="radio" name="q_t7_2" data-correct="true"> Только статистику по актуальному креативу — история по прежнему пропадёт</label></li>
+          <li><label><input type="radio" name="q_t7_2"> Полную статистику за весь период по всем креативам</label></li>
+        </ul>
+      </div>
+
+      <div class="opentask" data-k="ot_t7" data-label="Задача Т7 · Анализ кампаний">
+        <p class="q-text">Разберите завершённую или идущую учебную кампанию: назовите причины недолива (если есть) и предложите одну обоснованную оптимизацию, используя «Рекомендации для клиента» как основу. Опишите, что войдёт в полный отчёт клиенту: эфирная справка, статистика, фотоотчёты.</p>
         <textarea placeholder="Ваш ответ..."></textarea>
         <div class="opentask-actions">
           <button class="copybtn" type="button">Скопировать для руководителя</button>

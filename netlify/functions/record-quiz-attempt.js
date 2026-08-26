@@ -1,0 +1,33 @@
+const { findByToken, getState, saveState, json, connectLambda } = require('./_lib/store');
+
+// Called on every "Проверить" click, not just when the block is fully
+// passed — so the manager can see how many tries it took and which
+// questions tripped the student up along the way.
+exports.handler = async (event) => {
+  connectLambda(event);
+  if (event.httpMethod !== 'POST') return json(405, { error: 'method not allowed' });
+
+  let body;
+  try {
+    body = JSON.parse(event.body || '{}');
+  } catch {
+    return json(400, { error: 'bad json' });
+  }
+
+  const me = await findByToken(body.t);
+  if (!me) return json(404, { error: 'unknown token' });
+
+  const { key, wrongKeys, passed } = body;
+  if (!key || !Array.isArray(wrongKeys)) return json(400, { error: 'key and wrongKeys[] are required' });
+
+  const state = await getState(me.token);
+  const q = state.quizzes[key] || { passed: false, attempts: 0, everWrong: {} };
+  q.attempts += 1;
+  wrongKeys.forEach((k) => { q.everWrong[k] = true; });
+  if (passed) q.passed = true;
+  q.lastAttemptAt = new Date().toISOString();
+  state.quizzes[key] = q;
+
+  await saveState(me.token, state);
+  return json(200, { ok: true });
+};

@@ -27,7 +27,7 @@ async function findByToken(token) {
 }
 
 function emptyState() {
-  return { answers: {}, feedback: {} };
+  return { answers: {}, feedback: {}, quizzes: {} }; // quizzes[blockKey] = { passed, attempts, everWrong: {questionKey: true}, lastAttemptAt }
 }
 
 async function getState(token) {

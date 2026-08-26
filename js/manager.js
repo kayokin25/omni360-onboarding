@@ -50,6 +50,28 @@
     return idx;
   }
 
+  // ---------- index every quiz block, so we can show question text next to a miss ----------
+  var QUIZ_INDEX = buildQuizIndex();
+  function buildQuizIndex() {
+    var idx = {};
+    function scan(chapterLabel, steps) {
+      steps.forEach(function (s) {
+        if (s.type !== 'quizblock') return;
+        var questions = s.questions.map(function (q) {
+          var tmp = document.createElement('div');
+          tmp.innerHTML = q.html;
+          var text = (tmp.querySelector('.q-text') || {}).textContent || '';
+          return { key: q.key, text: text.trim() };
+        });
+        idx[s.key] = { chapterLabel: chapterLabel, questions: questions };
+      });
+    }
+    D.modules.forEach(function (m) { scan(m.number + ' · ' + m.title, m.steps); });
+    D.tasks.forEach(function (t) { scan(t.title, t.steps); });
+    scan('Аттестация', D.exam.steps);
+    return idx;
+  }
+
   var me = null;
   var lastCreatedLink = null;
   api('whoami?t=' + encodeURIComponent(token))
@@ -129,6 +151,27 @@
         return new Date(state.answers[a].submittedAt) - new Date(state.answers[b].submittedAt);
       });
 
+      var quizKeys = Object.keys(state.quizzes || {}).sort(function (a, b) {
+        return new Date(state.quizzes[a].lastAttemptAt || 0) - new Date(state.quizzes[b].lastAttemptAt || 0);
+      });
+      var quizBlocks = quizKeys.map(function (key) {
+        var meta = QUIZ_INDEX[key] || { chapterLabel: key, questions: [] };
+        var qz = state.quizzes[key];
+        var missedTexts = Object.keys(qz.everWrong || {}).map(function (qk) {
+          var q = meta.questions.filter(function (x) { return x.key === qk; })[0];
+          return q ? q.text : qk;
+        });
+        return (
+          '<div class="answer-block quiz-summary">' +
+            '<div class="answer-meta">' + escapeHtml(meta.chapterLabel) + ' · квиз</div>' +
+            '<div class="answer-q">' + (qz.passed ? 'Пройден' : 'Не пройден') + ' за ' + qz.attempts + (qz.attempts === 1 ? ' попытку' : qz.attempts < 5 ? ' попытки' : ' попыток') + '</div>' +
+            (missedTexts.length
+              ? '<div class="answer-text">Ошибался в вопросах:<br>— ' + missedTexts.map(escapeHtml).join('<br>— ') + '</div>'
+              : '<div class="answer-text" style="color:var(--good)">Прошёл без единой ошибки</div>') +
+          '</div>'
+        );
+      }).join('');
+
       var blocks = answerKeys.map(function (key) {
         var meta = ANSWER_INDEX[key] || { label: key, question: '' };
         var ans = state.answers[key];
@@ -156,14 +199,16 @@
         '<a class="backlink" href="#" id="backLink">← Ко всем ученикам</a>' +
         '<h2 class="chapter-title">' + escapeHtml(name) + '</h2>' +
         '<p style="color:var(--ink-soft); font-size:14px; margin:0 0 16px;">' +
-          answerKeys.length + ' из ' + D.meta.totalOpentasks + ' заданий отправлено' +
+          answerKeys.length + ' из ' + D.meta.totalOpentasks + ' заданий отправлено' + (quizKeys.length ? ' · ' + quizKeys.length + ' квиз(ов) пройдено' : '') +
         '</p>' +
-        (blocks || '<p style="color:var(--ink-faint)">Ученик пока не отправил ни одного ответа.</p>')
+        (quizBlocks ? '<h4 class="lbl" style="margin:0 0 10px;">Квизы</h4>' + quizBlocks : '') +
+        (blocks ? '<h4 class="lbl" style="margin:20px 0 10px;">Открытые ответы</h4>' + blocks : '') +
+        (!blocks && !quizBlocks ? '<p style="color:var(--ink-faint)">Ученик пока не отправил ни одного ответа.</p>' : '')
       );
 
       document.getElementById('backLink').addEventListener('click', function (e) { e.preventDefault(); renderRoster(); });
 
-      Array.prototype.forEach.call(document.querySelectorAll('.answer-block'), function (block) {
+      Array.prototype.forEach.call(document.querySelectorAll('.answer-block:not(.quiz-summary)'), function (block) {
         var key = block.dataset.key;
         var ta = block.querySelector('textarea');
         var btn = block.querySelector('.fb-form .btn');

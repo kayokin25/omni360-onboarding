@@ -26,12 +26,14 @@ function outer(el) {
 }
 
 // Group an ordered list of top-level body nodes into steps.
-// Each h4.lbl starts a new "concept" step; .quiz/.opentask/.ckbox each become
-// their own single-purpose step. Anything before the first h4 attaches to the
-// first concept step (or becomes its own lead-in step if nothing follows it).
+// Each h4.lbl starts a new "concept" step; .opentask/.ckbox each become their
+// own single-purpose step. Consecutive .quiz elements accumulate into ONE
+// 'quizblock' step (checked together, must all be correct to proceed).
+// Anything before the first h4 attaches to the first concept step.
 function groupIntoSteps(children) {
   const steps = [];
   let current = null;
+  let quizAcc = null;
 
   function flush() {
     if (current && current.htmlParts.length) {
@@ -39,14 +41,24 @@ function groupIntoSteps(children) {
     }
     current = null;
   }
+  function flushQuiz() {
+    if (quizAcc && quizAcc.length) {
+      const key = quizAcc.map((q) => q.key).join('+');
+      steps.push({ type: 'quizblock', title: null, key, questions: quizAcc });
+    }
+    quizAcc = null;
+  }
 
   for (const el of children) {
     const cls = ($(el).attr('class') || '');
     if (cls.includes('quiz')) {
       flush();
-      steps.push({ type: 'quiz', title: null, html: outer(el) });
+      const radioName = $(el).find('input[type=radio]').first().attr('name') || '';
+      if (!quizAcc) quizAcc = [];
+      quizAcc.push({ key: radioName, html: outer(el) });
       continue;
     }
+    flushQuiz();
     if (cls.includes('opentask')) {
       flush();
       steps.push({ type: 'opentask', title: null, html: outer(el) });
@@ -65,8 +77,25 @@ function groupIntoSteps(children) {
     if (!current) current = { type: 'concept', title: null, htmlParts: [] };
     current.htmlParts.push(outer(el));
   }
+  flushQuiz();
   flush();
   return steps;
+}
+
+// Per-chapter completion keys: which opentask answers and which quiz blocks
+// must be done for this module/task/exam to count as finished.
+function progressKeys(steps) {
+  const opentaskKeys = [];
+  const quizBlockKeys = [];
+  for (const s of steps) {
+    if (s.type === 'opentask') {
+      const m = s.html.match(/data-k="([^"]+)"/);
+      if (m) opentaskKeys.push(m[1]);
+    } else if (s.type === 'quizblock') {
+      quizBlockKeys.push(s.key);
+    }
+  }
+  return { opentaskKeys, quizBlockKeys };
 }
 
 // ---- modules (M1..M11) ----
@@ -86,7 +115,7 @@ $('article.card[data-block]').each((_, article) => {
     .toArray();
 
   const steps = groupIntoSteps(bodyChildren);
-  modules.push({ id, number, title, goal, duration, srcs, steps });
+  modules.push({ id, number, title, goal, duration, srcs, steps, ...progressKeys(steps) });
 });
 
 // ---- tasks (T1..T7) ----
@@ -108,7 +137,7 @@ $('article.task[data-block]').each((_, article) => {
     .toArray();
 
   const steps = groupIntoSteps(bodyChildren);
-  tasks.push({ id, stage, title, diff, io, steps });
+  tasks.push({ id, stage, title, diff, io, steps, ...progressKeys(steps) });
 });
 
 // ---- weeks (grouping metadata for the rail) ----
@@ -146,7 +175,7 @@ const glossary = { html: outer($('section.part#gloss .card').get(0)) };
 const examSection = $('section.part#exam .card');
 const examChildren = examSection.children().toArray();
 const examSteps = groupIntoSteps(examChildren);
-const exam = { steps: examSteps };
+const exam = { steps: examSteps, ...progressKeys(examSteps) };
 
 // ---- top-level meta ----
 const meta = {

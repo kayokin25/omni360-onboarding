@@ -45,7 +45,7 @@
 
   // ---------- app state ----------
   var me = null; // {name, role}
-  var state = null; // {answers, feedback}
+  var state = null; // {answers, feedback, quizzes}
   var navKey = 'onboarding-nav:' + token;
   var current = loadNav();
 
@@ -67,6 +67,18 @@
 
   function totalAnswered() {
     return Object.keys(state.answers).length;
+  }
+
+  // a module/task/exam is "done" once every one of its open answers is sent
+  // and every one of its quiz blocks is passed; intro/glossary have neither
+  function isChapterDone(ch) {
+    var data = ch.data || (ch.kind === 'exam' ? D.exam : null);
+    if (!data) return false;
+    var otKeys = data.opentaskKeys || [];
+    var qKeys = data.quizBlockKeys || [];
+    if (!otKeys.length && !qKeys.length) return false;
+    return otKeys.every(function (k) { return !!state.answers[k]; }) &&
+      qKeys.every(function (k) { return state.quizzes[k] && state.quizzes[k].passed; });
   }
 
   // ---------- boot ----------
@@ -111,7 +123,7 @@
     chapters.forEach(function (c) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.textContent = c.short;
+      b.innerHTML = escapeHtml(c.short) + (isChapterDone(c) ? ' <span class="rail-done">✓</span>' : '');
       b.className = c.key === ch.key ? 'active' : '';
       b.addEventListener('click', function () { current = { chapter: c.key, step: 0 }; saveNav(); render(); });
       rail.appendChild(b);
@@ -167,21 +179,23 @@
 
     if (current.step >= steps.length) current.step = 0;
     var stepIdx = current.step;
+    var step = steps[stepIdx];
     var chIdx = chapterIndex(ch.key);
     var isFirstOverall = chIdx === 0 && stepIdx === 0;
     var isLastOverall = chIdx === chapters.length - 1 && stepIdx === steps.length - 1;
     var nextLabel = stepIdx === steps.length - 1 && chIdx < chapters.length - 1
       ? 'Дальше: ' + chapters[chIdx + 1].short + ' →'
       : 'Далее →';
+    var quizLocked = step.type === 'quizblock' && !(state.quizzes[step.key] && state.quizzes[step.key].passed);
 
     body.innerHTML =
       head +
-      '<div class="card">' + steps[stepIdx].html + '</div>' +
+      '<div class="card">' + stepHtml(step) + '</div>' +
       '<div class="nav">' +
         '<span class="step-of">Шаг ' + (stepIdx + 1) + ' из ' + steps.length + '</span>' +
         '<div class="btnrow">' +
           '<button class="btn ghost" id="prevBtn"' + (isFirstOverall ? ' disabled' : '') + '>← Назад</button>' +
-          '<button class="btn" id="nextBtn"' + (isLastOverall ? ' disabled' : '') + '>' + nextLabel + '</button>' +
+          '<button class="btn" id="nextBtn" data-label="' + escapeHtml(nextLabel) + '"' + ((isLastOverall || quizLocked) ? ' disabled' : '') + '>' + (quizLocked ? 'Сначала пройдите квиз' : nextLabel) + '</button>' +
         '</div>' +
       '</div>';
 
@@ -201,9 +215,23 @@
     wireInteractions(body);
   }
 
+  function stepHtml(step) {
+    if (step.type !== 'quizblock') return step.html;
+    var passed = !!(state.quizzes[step.key] && state.quizzes[step.key].passed);
+    return (
+      '<div class="quizblock" data-key="' + escapeHtml(step.key) + '">' +
+        step.questions.map(function (q) { return q.html; }).join('') +
+        '<div class="qb-footer">' +
+          '<button class="btn" id="qbCheck"' + (passed ? ' disabled' : '') + '>' + (passed ? 'Пройдено ✓' : 'Проверить') + '</button>' +
+          '<div class="qb-score"' + (passed ? '' : ' hidden') + '>' + (passed ? 'Все ответы верны' : '') + '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   // ---------- interactivity inside injected HTML ----------
   function wireInteractions(root) {
-    wireQuiz(root);
+    wireQuizBlock(root);
     wireOpentask(root);
   }
 
@@ -214,18 +242,65 @@
     if (bar) bar.style.width = Math.round(100 * totalAnswered() / D.meta.totalOpentasks) + '%';
   }
 
-  function wireQuiz(root) {
-    root.querySelectorAll('.quiz').forEach(function (q) {
-      var radios = q.querySelectorAll('input[type=radio]');
-      var fb = q.querySelector('.q-fb');
-      radios.forEach(function (r) {
-        r.addEventListener('change', function () {
-          var correct = r.dataset.correct === 'true';
-          q.classList.remove('ok', 'no');
-          q.classList.add('answered', correct ? 'ok' : 'no');
-          fb.textContent = correct ? (fb.dataset.ok || 'Верно.') : (fb.dataset.no || 'Неверно, посмотрите ещё раз.');
-        });
+  function wireQuizBlock(root) {
+    var block = root.querySelector('.quizblock');
+    if (!block) return;
+    var key = block.dataset.key;
+    var checkBtn = block.querySelector('#qbCheck');
+    var scoreEl = block.querySelector('.qb-score');
+    if (state.quizzes[key] && state.quizzes[key].passed) return; // already passed, nothing to wire
+
+    // clear any wrong/right highlight the moment the student changes an answer
+    block.querySelectorAll('.quiz').forEach(function (q) {
+      q.querySelectorAll('input[type=radio]').forEach(function (r) {
+        r.addEventListener('change', function () { q.classList.remove('wrong', 'right'); });
       });
+    });
+
+    checkBtn.addEventListener('click', function () {
+      var questions = Array.prototype.slice.call(block.querySelectorAll('.quiz'));
+      var unanswered = questions.filter(function (q) { return !q.querySelector('input[type=radio]:checked'); });
+      if (unanswered.length) {
+        scoreEl.hidden = false;
+        scoreEl.className = 'qb-score warn';
+        scoreEl.textContent = 'Ответьте на все вопросы, прежде чем проверять.';
+        unanswered.forEach(function (q) { q.classList.add('wrong'); });
+        return;
+      }
+
+      var correctCount = 0;
+      var wrongKeys = [];
+      questions.forEach(function (q) {
+        var picked = q.querySelector('input[type=radio]:checked');
+        var right = picked.dataset.correct === 'true';
+        q.classList.toggle('right', right);
+        q.classList.toggle('wrong', !right);
+        if (right) correctCount++;
+        else wrongKeys.push(picked.name);
+      });
+
+      var passed = correctCount === questions.length;
+      scoreEl.hidden = false;
+      scoreEl.textContent = correctCount + ' из ' + questions.length + ' правильно';
+
+      api('record-quiz-attempt', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ t: token, key: key, wrongKeys: wrongKeys, passed: passed }),
+      }).catch(function () { /* best-effort; local state already updated below */ });
+
+      if (passed) {
+        scoreEl.className = 'qb-score ok';
+        state.quizzes[key] = state.quizzes[key] || { passed: false, attempts: 0, everWrong: {} };
+        state.quizzes[key].passed = true;
+        checkBtn.disabled = true;
+        checkBtn.textContent = 'Пройдено ✓';
+        var nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) { nextBtn.disabled = false; nextBtn.textContent = nextBtn.dataset.label || 'Далее →'; }
+      } else {
+        scoreEl.className = 'qb-score warn';
+        scoreEl.textContent += ' — найдите ошибку в подсвеченных вопросах и попробуйте снова.';
+      }
     });
   }
 

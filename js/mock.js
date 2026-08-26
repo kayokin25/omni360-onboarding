@@ -5,7 +5,7 @@
   var mode = new URLSearchParams(location.search).get('mock');
   if (!mode) return;
 
-  var studentState = { answers: {}, feedback: {} };
+  var studentState = { answers: {}, feedback: {}, quizzes: {} };
   var students = [
     { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), answered: 1, answersWithoutFeedback: 1 },
   ];
@@ -13,6 +13,7 @@
     ot_m1: { text: 'DOOH дополняет интернет-рекламу охватом в общественных местах, ОРД не нужен, потому что DOOH не подпадает под закон о маркировке интернет-рекламы.', submittedAt: new Date().toISOString() },
   };
   var demoFeedback = {};
+  var demoQuizzes = { 'q_m1_1+q_m1_2+q_m1_3+q_m1_4+q_m1_5': { passed: true, attempts: 2, everWrong: { q_m1_1: true } } };
 
   var realFetch = window.fetch.bind(window);
   window.fetch = function (url, opts) {
@@ -25,12 +26,21 @@
       return ok(mode === 'manager' ? { name: 'Руководитель (демо)', role: 'manager' } : { name: 'Ученик (демо)', role: 'student' });
     }
     if (u.indexOf('/api/get-state') === 0) {
-      if (u.indexOf('student=') > -1) return ok({ answers: demoAnswers, feedback: demoFeedback });
+      if (u.indexOf('student=') > -1) return ok({ answers: demoAnswers, feedback: demoFeedback, quizzes: demoQuizzes });
       return ok(studentState);
     }
     if (u.indexOf('/api/submit-answer') === 0) {
       var b2 = JSON.parse(opts.body);
       studentState.answers[b2.questionKey] = { text: b2.text, submittedAt: new Date().toISOString() };
+      return ok({ ok: true });
+    }
+    if (u.indexOf('/api/record-quiz-attempt') === 0) {
+      var b5 = JSON.parse(opts.body);
+      var qz = studentState.quizzes[b5.key] || { passed: false, attempts: 0, everWrong: {} };
+      qz.attempts += 1;
+      b5.wrongKeys.forEach(function (k) { qz.everWrong[k] = true; });
+      if (b5.passed) qz.passed = true;
+      studentState.quizzes[b5.key] = qz;
       return ok({ ok: true });
     }
     if (u.indexOf('/api/list-students') === 0) return ok({ students: students });
