@@ -3,10 +3,12 @@ const { getStore, connectLambda } = require('@netlify/blobs');
 const ROSTER_KEY = 'roster';
 
 function store() {
-  // Strong consistency: this tool is low-traffic and a manager reading a
-  // student's answer seconds after it was submitted must see it immediately,
-  // not whatever the eventually-consistent edge cache still has.
-  return getStore({ name: 'onboarding', consistency: 'strong' });
+  // NOTE: consistency:'strong' is NOT available here — connectLambda()'s
+  // context (Lambda-compat mode, which classic exports.handler functions run
+  // in) never carries the uncachedEdgeURL that strong reads require; passing
+  // it throws BlobsConsistencyError on every call. Default (eventually
+  // consistent, ~60s worst case) is the only option in this mode.
+  return getStore('onboarding');
 }
 
 async function getRoster() {
@@ -25,7 +27,7 @@ async function findByToken(token) {
 }
 
 function emptyState() {
-  return { checklist: {}, quiz: {}, answers: {}, feedback: {} };
+  return { answers: {}, feedback: {} };
 }
 
 async function getState(token) {
