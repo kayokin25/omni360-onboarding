@@ -3,7 +3,10 @@ const { getStore, connectLambda } = require('@netlify/blobs');
 const ROSTER_KEY = 'roster';
 
 function store() {
-  return getStore('onboarding');
+  // Strong consistency: this tool is low-traffic and a manager reading a
+  // student's answer seconds after it was submitted must see it immediately,
+  // not whatever the eventually-consistent edge cache still has.
+  return getStore({ name: 'onboarding', consistency: 'strong' });
 }
 
 async function getRoster() {
