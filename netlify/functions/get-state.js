@@ -1,6 +1,7 @@
-const { findByToken, getState, json } = require('./_lib/store');
+const { findByToken, getState, json, connectLambda } = require('./_lib/store');
 
 exports.handler = async (event) => {
+  connectLambda(event);
   const q = event.queryStringParameters || {};
   const me = await findByToken(q.t);
   if (!me) return json(404, { error: 'unknown token' });

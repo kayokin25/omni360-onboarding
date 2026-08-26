@@ -1,9 +1,10 @@
 // One-time bootstrap: works only while the roster is completely empty, so it
 // can't be used to mint extra managers later. Run it once after first deploy
 // to get your own manager link, then forget it exists.
-const { getRoster, saveRoster, randomToken, json } = require('./_lib/store');
+const { getRoster, saveRoster, randomToken, json, connectLambda } = require('./_lib/store');
 
 exports.handler = async (event) => {
+  connectLambda(event);
   if (event.httpMethod !== 'POST') return json(405, { error: 'method not allowed' });
 
   const roster = await getRoster();

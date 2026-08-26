@@ -1,6 +1,7 @@
-const { findByToken, getState, saveState, json } = require('./_lib/store');
+const { findByToken, getState, saveState, json, connectLambda } = require('./_lib/store');
 
 exports.handler = async (event) => {
+  connectLambda(event);
   if (event.httpMethod !== 'POST') return json(405, { error: 'method not allowed' });
 
   let body;

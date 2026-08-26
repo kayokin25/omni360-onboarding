@@ -1,4 +1,4 @@
-const { getStore } = require('@netlify/blobs');
+const { getStore, connectLambda } = require('@netlify/blobs');
 
 const ROSTER_KEY = 'roster';
 
@@ -49,4 +49,4 @@ function json(status, body) {
   };
 }
 
-module.exports = { getRoster, saveRoster, findByToken, getState, saveState, randomToken, json, emptyState };
+module.exports = { getRoster, saveRoster, findByToken, getState, saveState, randomToken, json, emptyState, connectLambda };
