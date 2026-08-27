@@ -69,6 +69,45 @@
   }
   var chapters = buildChapters();
 
+  // where each open question lives, so a manager's reply can link straight to it
+  var STEP_OF_KEY = {};
+  chapters.forEach(function (c) {
+    chapterSteps(c).forEach(function (s, i) {
+      if (s.type !== 'opentask') return;
+      var key = (s.html.match(/data-k="([^"]+)"/) || [])[1];
+      if (!key) return;
+      var label = (s.html.match(/data-label="([^"]*)"/) || [])[1] || c.short;
+      STEP_OF_KEY[key] = { chapter: c.key, step: i, label: label };
+    });
+  });
+
+  function unreadMessages(key) {
+    var thread = state.feedback[key] || [];
+    var seen = state.feedbackSeen[key];
+    // ISO strings sort lexicographically, so a plain > is enough here
+    return seen ? thread.filter(function (f) { return f.at > seen; }) : thread.slice();
+  }
+
+  function unreadInChapter(chapterKey) {
+    return Object.keys(STEP_OF_KEY).reduce(function (acc, key) {
+      var loc = STEP_OF_KEY[key];
+      if (loc.chapter !== chapterKey) return acc;
+      var messages = unreadMessages(key);
+      if (messages.length) acc.push({ key: key, loc: loc, messages: messages });
+      return acc;
+    }, []);
+  }
+
+  function markRead(keys) {
+    var seenAt = new Date().toISOString();
+    keys.forEach(function (k) { state.feedbackSeen[k] = seenAt; });
+    api('mark-feedback-read', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ t: token, questionKeys: keys }),
+    }).catch(function () { /* best-effort; the dot is already cleared locally */ });
+  }
+
   // ---------- app state ----------
   var me = null; // {name, role}
   var state = null; // {answers, feedback, quizzes}
@@ -120,6 +159,8 @@
     .then(function (s) {
       if (!s) return;
       state = s;
+      // states saved before feedbackSeen existed come back without it
+      if (!state.feedbackSeen) state.feedbackSeen = {};
       render();
     })
     .catch(function (err) {
@@ -147,15 +188,89 @@
 
     var rail = document.getElementById('chapterRail');
     chapters.forEach(function (c) {
+      var unread = unreadInChapter(c.key);
       var b = document.createElement('button');
       b.type = 'button';
-      b.innerHTML = escapeHtml(c.short) + (isChapterDone(c) ? ' <span class="rail-done">✓</span>' : '');
-      b.className = c.key === ch.key ? 'active' : '';
-      b.addEventListener('click', function () { current = { chapter: c.key, step: 0 }; saveNav(); render(); });
+      b.innerHTML = escapeHtml(c.short) +
+        (unread.length ? ' <span class="rail-dot" aria-label="есть ответ руководителя"></span>' : '') +
+        (isChapterDone(c) ? ' <span class="rail-done">✓</span>' : '');
+      b.className = (c.key === ch.key ? 'active' : '') + (unread.length ? ' has-feedback' : '');
+      b.addEventListener('click', function () {
+        // a chapter with an unanswered reply shows the reply first, rather than
+        // silently dropping the student on step 1 to hunt for it
+        if (unread.length) { openFeedback(c, unread); return; }
+        current = { chapter: c.key, step: 0 };
+        saveNav();
+        render();
+      });
       rail.appendChild(b);
     });
 
     renderChapter(ch);
+  }
+
+  function openFeedback(chapter, items) {
+    var wrap = document.createElement('div');
+    wrap.className = 'fbmodal';
+    wrap.innerHTML =
+      '<div class="fbmodal-card" role="dialog" aria-modal="true" aria-labelledby="fbTitle">' +
+        '<div class="fbmodal-head">' +
+          '<div>' +
+            '<div class="fbmodal-kicker">' + escapeHtml(chapter.short) + '</div>' +
+            '<h3 id="fbTitle">' + (items.length === 1 ? 'Руководитель ответил на ваше задание' : 'Руководитель ответил на ' + items.length + ' ваших задания') + '</h3>' +
+          '</div>' +
+          '<button type="button" class="fbmodal-x" id="fbX" aria-label="Закрыть">&times;</button>' +
+        '</div>' +
+        '<div class="fbmodal-body">' +
+          items.map(function (it) {
+            return '<div class="fbmodal-item">' +
+              '<div class="fbmodal-q">' + escapeHtml(it.loc.label) + '</div>' +
+              it.messages.map(function (f) {
+                return '<div class="feedback-msg"><div class="fm-head">' + escapeHtml(f.author) + ' · ' + formatDate(f.at) + '</div>' + escapeHtml(f.text) + '</div>';
+              }).join('') +
+              '<button type="button" class="fbmodal-go" data-key="' + escapeHtml(it.key) + '">Перейти к ответу →</button>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<div class="fbmodal-foot">' +
+          '<button type="button" class="btn" id="fbRead">Отметить прочитанным</button>' +
+          '<button type="button" class="btn ghost" id="fbClose">Закрыть</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(wrap);
+
+    function close() {
+      wrap.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    document.addEventListener('keydown', onKey);
+
+    // backdrop only — a click inside the card must not dismiss it
+    wrap.addEventListener('click', function (e) { if (e.target === wrap) close(); });
+    wrap.querySelector('#fbX').addEventListener('click', close);
+    wrap.querySelector('#fbClose').addEventListener('click', close);
+
+    wrap.querySelector('#fbRead').addEventListener('click', function () {
+      markRead(items.map(function (it) { return it.key; }));
+      close();
+      render();
+    });
+
+    Array.prototype.forEach.call(wrap.querySelectorAll('.fbmodal-go'), function (btn) {
+      btn.addEventListener('click', function () {
+        var key = btn.dataset.key;
+        // they are about to read it in place, so the dot has done its job
+        markRead([key]);
+        current = { chapter: STEP_OF_KEY[key].chapter, step: STEP_OF_KEY[key].step };
+        saveNav();
+        close();
+        render();
+        window.scrollTo({ top: 0 });
+      });
+    });
+
+    wrap.querySelector('#fbRead').focus();
   }
 
   // every chapter, even a single-screen one like intro/glossary, exposes a

@@ -5,7 +5,15 @@
   var mode = new URLSearchParams(location.search).get('mock');
   if (!mode) return;
 
-  var studentState = { answers: {}, feedback: {}, quizzes: {} };
+  var hourAgo = new Date(Date.now() - 3600e3).toISOString();
+  // seeded with one answered task that already has an unread reply, so the
+  // chapter dot and the reply modal are visible in preview
+  var studentState = {
+    answers: { ot_m1: { text: 'Демо-ответ ученика.', submittedAt: hourAgo } },
+    feedback: { ot_m1: [{ text: 'Хорошо, но добавьте про ЕРИР — клиенты из диджитала спрашивают именно этими словами.', author: 'Руководитель (демо)', at: hourAgo }] },
+    feedbackSeen: {},
+    quizzes: {},
+  };
   var students = [
     { token: 'demo-anna', name: 'Анна Тестовая', createdAt: new Date().toISOString(), answered: 1, answersWithoutFeedback: 1, quizPassed: 2, quizAttempts: 4, quizMissed: 2 },
   ];
@@ -57,6 +65,12 @@
       if (b5.passed) qz.passed = true;
       studentState.quizzes[b5.key] = qz;
       return ok({ ok: true });
+    }
+    if (u.indexOf('/api/mark-feedback-read') === 0) {
+      var b6 = JSON.parse(opts.body);
+      var seenAt = new Date().toISOString();
+      (b6.questionKeys || [b6.questionKey]).forEach(function (k) { if (k) studentState.feedbackSeen[k] = seenAt; });
+      return ok({ ok: true, seenAt: seenAt });
     }
     if (u.indexOf('/api/list-students') === 0) return ok({ students: students });
     if (u.indexOf('/api/create-student') === 0) {

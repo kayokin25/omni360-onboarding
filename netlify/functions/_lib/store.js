@@ -32,7 +32,9 @@ function emptyState() {
   // `picks` holds every distinct wrong option the student selected, indexed by
   // the option's position in the question. Very old states have `true` instead
   // of the object — record-quiz-attempt upgrades those on the next attempt.
-  return { answers: {}, feedback: {}, quizzes: {} };
+  // feedbackSeen[questionKey] = ISO timestamp of when the student last marked
+  // that thread read; anything newer than it lights the chapter dot again
+  return { answers: {}, feedback: {}, feedbackSeen: {}, quizzes: {} };
 }
 
 async function getState(token) {

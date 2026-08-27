@@ -69,6 +69,24 @@ h1.title{font-family:var(--font-display); font-weight:600; font-size:30px; line-
 .rail button:hover{color:var(--ink-soft);}
 .rail button.active{background:var(--accent); border-color:var(--accent); color:var(--accent-ink);}
 .rail button.visited{color:var(--ink-soft);}
+.rail button.has-feedback{border-color:var(--accent); color:var(--ink);}
+.rail-dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--accent); vertical-align:1px; margin-left:2px;}
+
+/* ---------- manager's reply, opened from the chapter button ---------- */
+.fbmodal{position:fixed; inset:0; z-index:90; background:rgba(8,14,22,.6); display:flex; align-items:center; justify-content:center; padding:20px; overflow:auto;}
+.fbmodal-card{background:var(--surface); border:1px solid var(--border); border-radius:14px; width:100%; max-width:560px; margin:auto; box-shadow:0 18px 50px rgba(0,0,0,.35); display:flex; flex-direction:column; max-height:calc(100vh - 40px);}
+.fbmodal-head{display:flex; align-items:flex-start; gap:12px; padding:18px 20px 12px; border-bottom:1px solid var(--border);}
+.fbmodal-head h3{font-family:var(--font-display); font-size:19px; font-weight:600; margin:3px 0 0; line-height:1.25; text-wrap:balance;}
+.fbmodal-kicker{font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);}
+.fbmodal-x{margin-left:auto; flex:0 0 auto; background:none; border:none; color:var(--ink-faint); font-size:24px; line-height:1; cursor:pointer; padding:0 2px;}
+.fbmodal-x:hover{color:var(--ink);}
+.fbmodal-body{padding:16px 20px; overflow-y:auto; display:grid; gap:16px;}
+.fbmodal-item{display:grid; gap:8px;}
+.fbmodal-q{font-family:var(--font-mono); font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-faint);}
+.fbmodal-go{justify-self:start; background:none; border:none; padding:0; font:inherit; font-size:13.4px; font-weight:600; color:var(--accent); cursor:pointer;}
+.fbmodal-go:hover{text-decoration:underline;}
+.fbmodal-foot{display:flex; gap:10px; flex-wrap:wrap; padding:14px 20px 18px; border-top:1px solid var(--border);}
+
 .chapter-head{margin:18px 0 6px;}
 .chapter-kicker{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent);}
 h2.chapter-title{font-family:var(--font-display); font-size:25px; font-weight:600; margin:4px 0 6px; line-height:1.2; text-wrap:balance;}
