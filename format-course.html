@@ -165,7 +165,37 @@
   .recap .d{color:var(--ink-soft); font-size:13.5px;}
 
   code.tag{font-family:var(--font-mono); font-size:.92em; background:var(--surface-2); padding:1px 5px; border-radius:4px;}
+  .themetoggle{position:fixed; top:14px; right:14px; z-index:60; width:34px; height:34px; padding:0;
+    border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
+    font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+  .themetoggle:hover{color:var(--ink); border-color:var(--ink-faint);}
+  @media print{ .themetoggle{display:none;} }
 </style>
+
+<script>
+(function () {
+  var KEY = 'omni-theme', root = document.documentElement;
+  try { var saved = localStorage.getItem(KEY); if (saved) root.dataset.theme = saved; } catch (e) {}
+  function current() {
+    return root.dataset.theme || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  }
+  function paint() {
+    var b = document.getElementById('themeBtn'); if (!b) return;
+    var dark = current() === 'dark';
+    b.textContent = dark ? '\u2600' : '\u263E';
+    b.title = dark ? 'Светлая тема' : 'Тёмная тема';
+  }
+  window.__toggleTheme = function () {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    paint();
+  };
+  document.addEventListener('DOMContentLoaded', paint);
+})();
+</script>
+
+<button type="button" id="themeBtn" class="themetoggle" aria-label="Переключить тему" onclick="__toggleTheme()">☾</button>
 
 <div class="shell">
 

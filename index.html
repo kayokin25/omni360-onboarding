@@ -5,9 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Онбординг Omni360</title>
 <link rel="stylesheet" href="styles.css">
+<script>
+(function () {
+  var KEY = 'omni-theme', root = document.documentElement;
+  try { var saved = localStorage.getItem(KEY); if (saved) root.dataset.theme = saved; } catch (e) {}
+  function current() {
+    return root.dataset.theme || (matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
+  }
+  function paint() {
+    var b = document.getElementById('themeBtn'); if (!b) return;
+    var dark = current() === 'dark';
+    b.textContent = dark ? '\u2600' : '\u263E';
+    b.title = dark ? 'Светлая тема' : 'Тёмная тема';
+  }
+  window.__toggleTheme = function () {
+    var next = current() === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try { localStorage.setItem(KEY, next); } catch (e) {}
+    paint();
+  };
+  document.addEventListener('DOMContentLoaded', paint);
+})();
+</script>
 </head>
 <body>
 
+<button type="button" id="themeBtn" class="themetoggle" aria-label="Переключить тему" onclick="__toggleTheme()">☾</button>
 <div id="app"></div>
 
 <script src="content/course-data.js"></script>

@@ -30,6 +30,22 @@
     --bad:#E08469; --bad-bg:#2A1A16;
   }
 }
+:root[data-theme="dark"]{
+  --bg:#0E1520; --surface:#161F2A; --surface-2:#1E2833; --surface-3:#243040; --border:#2B3846;
+  --ink:#E7ECF1; --ink-soft:#A2AEBB; --ink-faint:#6D7A88;
+  --accent:#5FA8E8; --accent-ink:#0E1520; --accent-bg:#152634;
+  --good:#57C08B; --good-bg:#12281E;
+  --warn:#D9A45B; --warn-bg:#2A2115;
+  --bad:#E08469; --bad-bg:#2A1A16;
+}
+:root[data-theme="light"]{
+  --bg:#F3F5F8; --surface:#FFFFFF; --surface-2:#EAEDF2; --surface-3:#E1E6EE; --border:#D8DEE6;
+  --ink:#16202B; --ink-soft:#54626F; --ink-faint:#8994A1;
+  --accent:#256FB5; --accent-ink:#FFFFFF; --accent-bg:#E3EDF7;
+  --good:#268A5A; --good-bg:#E4F3EA;
+  --warn:#9C6510; --warn-bg:#F6ECDA;
+  --bad:#B8452F; --bad-bg:#F7E7E2;
+}
 *{box-sizing:border-box;}
 body{
   margin:0; background:var(--bg); color:var(--ink);
@@ -132,6 +148,8 @@ a{color:var(--accent);}
 .note p:last-child{margin-bottom:0;}
 .note ul{margin:0; padding-left:18px;}
 .note .nl{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; display:block; margin-bottom:5px;}
+.note{background:var(--surface-2); border-color:var(--border);}
+.note .nl{color:var(--ink-faint);}
 .note.warn{background:var(--warn-bg); border-color:var(--warn);}
 .note.warn .nl{color:var(--warn);}
 .note.stop{background:var(--bad-bg); border-color:var(--bad);}
@@ -234,3 +252,8 @@ button.btn:disabled{opacity:.4; cursor:default;}
 .fb-form textarea{flex:1; min-height:52px; resize:vertical; font:inherit; font-size:13.6px; padding:8px 10px; border-radius:8px; border:1px solid var(--border); background:var(--surface); color:var(--ink);}
 
 .backlink{font-family:var(--font-mono); font-size:12px; color:var(--ink-faint); text-decoration:none; display:inline-block; margin-bottom:10px;}
+.themetoggle{position:fixed; top:14px; right:14px; z-index:60; width:34px; height:34px; padding:0;
+  border-radius:50%; border:1px solid var(--border); background:var(--surface); color:var(--ink-soft);
+  font-size:15px; line-height:1; cursor:pointer; display:flex; align-items:center; justify-content:center;}
+.themetoggle:hover{color:var(--ink); border-color:var(--ink-faint);}
+@media print{ .themetoggle{display:none;} }
