@@ -116,6 +116,12 @@ a{color:var(--accent);}
 .shotimg{max-width:100%; height:auto; display:block; margin:14px 0 4px; border-radius:10px; border:1px solid var(--border); background:var(--surface); cursor:zoom-in;}
 .shotcap{font-size:12.5px; color:var(--ink-faint); margin:0 0 14px;}
 .shotcap b{color:var(--ink-soft); font-weight:600;}
+.shotrow{display:grid; grid-template-columns:230px 1fr; gap:20px; align-items:start; margin:14px 0;}
+.shotrow .shotimg{margin:0 0 6px;}
+.shotrow .shotcap{margin:0;}
+.shotrow ul{margin-top:6px;}
+.shotrow>div>p:first-child{margin-top:0;}
+@media (max-width:700px){ .shotrow{grid-template-columns:1fr;} }
 .shotcap .mark{display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%; background:#E4572E; color:#fff; font-size:10px; font-weight:700; vertical-align:-2px; margin-right:2px;}
 
 .lightbox{position:fixed; inset:0; z-index:100; background:rgba(8,14,22,.88); padding:20px; overflow:auto; cursor:zoom-out; display:flex;}
